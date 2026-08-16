@@ -5,8 +5,8 @@
 title: "quantumflux43"
 tagline: "root@crypto:~# breaking ciphers for fun"
 description: >-
-  Catatan kripto: progress CryptoHack, arsip writeup CTF per tahun,
-  dan dump ilmu soal RSA, AES, ECC, hash, PRNG, sampai lattice.
+  Catatan kripto: Arsip CryptoHack, arsip writeup CTF per tahun,
+  dan dump ilmu soal Cryptography.
 
 url: "https://quantumflux43.github.io"
 baseurl: ""
