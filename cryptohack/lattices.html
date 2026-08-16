@@ -1,0 +1,43 @@
+---
+layout: default
+title: "CryptoHack :: Lattices"
+permalink: /cryptohack/lattices/
+ch_slug: lattices
+---
+{% assign cat = site.cryptohack.categories | where:"slug",page.ch_slug | first %}
+<div class="post-head">
+  <div class="breadcrumb"><a href="{{ '/cryptohack/' | relative_url }}">cryptohack</a> / lattices</div>
+  <h1>Lattices</h1>
+</div>
+
+{% if cat.total > 0 %}{% assign pct = cat.solved | times: 100 | divided_by: cat.total %}{% else %}{% assign pct = 0 %}{% endif %}
+<div class="prog">
+  <div class="top">
+    <span class="name">progress</span>
+    <span class="num">{{ cat.solved }}/{{ cat.total }} ({{ pct }}%)</span>
+  </div>
+  <div class="bar"><div class="fill" style="width:{{ pct }}%"></div></div>
+</div>
+
+{% assign ch_posts = site.posts | where:"platform","cryptohack" | where:"ch_cat",page.ch_slug %}
+
+<div class="sec-title">
+  <h2>writeup</h2>
+  <span class="cmd">$ grep lattices ~/cryptohack</span>
+  <span class="rule"></span>
+</div>
+{% if ch_posts.size == 0 %}
+<div class="empty">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 13l2 2 4-4"/></svg>
+  <div class="t">belum ada writeup Lattices</div>
+  <div class="h">Tambah post dengan <code>platform: cryptohack</code> dan <code>ch_cat: lattices</code> di front matter.</div>
+</div>
+{% else %}
+<div class="arch-group">
+  <ul>
+    {% for post in ch_posts %}
+    <li><a href="{{ post.url | relative_url }}">{{ post.title }}</a><span class="d">{{ post.date | date: "%d %b %Y" }}</span></li>
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}

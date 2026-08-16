@@ -11,9 +11,10 @@ permalink: /ctf/
   </p>
 </div>
 
+{% assign ctf_all = site.posts | where_exp:"p","p.platform == nil" %}
 <div class="year-grid">
   {% for y in site.ctf_years %}
-    {% assign yposts = site.posts | where_exp:"p","p.date.year == y" %}
+    {% assign yposts = ctf_all | where_exp:"p","p.date.year == y" %}
     <a class="year-card" href="{{ '/ctf/' | append: y | append: '/' | relative_url }}">
       <div class="y">{{ y }}</div>
       <div class="n">{{ yposts.size }} writeup</div>

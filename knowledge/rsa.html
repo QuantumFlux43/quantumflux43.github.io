@@ -13,8 +13,17 @@ kn_slug: rsa
 
 {% assign kn_posts = site.posts | where:"platform","knowledge" | where:"kn_cat",page.kn_slug %}
 
+<div class="sec-title">
+  <h2>catatan</h2>
+  <span class="cmd">$ ls ~/knowledge/rsa</span>
+  <span class="rule"></span>
+</div>
 {% if kn_posts.size == 0 %}
-<p style="color:var(--fg2)">Belum ada catatan. Tambah post dengan <code>platform: knowledge</code> dan <code>kn_cat: rsa</code> di front matter.</p>
+<div class="empty">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+  <div class="t">belum ada catatan RSA</div>
+  <div class="h">Tambah post dengan <code>platform: knowledge</code> dan <code>kn_cat: rsa</code> di front matter.</div>
+</div>
 {% else %}
 <div class="arch-group">
   <ul>

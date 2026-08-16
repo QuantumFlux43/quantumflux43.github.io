@@ -3,15 +3,28 @@ layout: default
 title: Home
 ---
 <section class="hero">
-  <div class="line"><span class="d">$</span> <span class="g">whoami</span></div>
-  <div class="line">{{ site.author.github }} <span class="d">// crypto player, ctf grinder</span></div>
-  <h1>{{ site.title }}</h1>
-  <p>{{ site.description }}</p>
+  <div class="winbar">
+    <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+    <span class="path">{{ site.author.github }}@crypto: ~</span>
+  </div>
+  <div class="body">
+    <div class="line"><span class="d">$</span> <span class="g">whoami</span></div>
+    <div class="line">{{ site.author.github }} <span class="d"># crypto player, ctf grinder</span></div>
+    <div class="line"><span class="d">$</span> <span class="g">cat</span> <span class="c">intro.txt</span></div>
+    <h1>{{ site.title }}<span class="blink">_</span></h1>
+    <p>{{ site.description }}</p>
+  </div>
 </section>
+
+<div class="sec-title">
+  <h2>navigasi</h2>
+  <span class="cmd">$ ls sections/</span>
+  <span class="rule"></span>
+</div>
 
 <div class="zone-grid">
   <a class="zone" href="{{ '/cryptohack/' | relative_url }}">
-    <div class="num">01</div>
+    <div class="num">01 :: cryptohack.org</div>
     <h3>CryptoHack</h3>
     <p>Progress per kategori dan writeup tiap challenge yang gua kerjain.</p>
     <span class="go">buka
@@ -19,7 +32,7 @@ title: Home
     </span>
   </a>
   <a class="zone" href="{{ '/ctf/' | relative_url }}">
-    <div class="num">02</div>
+    <div class="num">02 :: per tahun</div>
     <h3>CTF Archives</h3>
     <p>Writeup soal kripto dari CTF, diarsip per tahun. Solver, math, sampai flag.</p>
     <span class="go">buka
@@ -27,7 +40,7 @@ title: Home
     </span>
   </a>
   <a class="zone" href="{{ '/knowledge/' | relative_url }}">
-    <div class="num">03</div>
+    <div class="num">03 :: catatan</div>
     <h3>Crypto Knowledge</h3>
     <p>Rangkuman serangan dan teori: RSA, AES, ECC, hash, PRNG, lattice.</p>
     <span class="go">buka
@@ -36,9 +49,14 @@ title: Home
   </a>
 </div>
 
-<h2 style="margin-top:0">terbaru</h2>
+<div class="sec-title">
+  <h2>terbaru</h2>
+  <span class="cmd">$ ls -lt ~/writeups</span>
+  <span class="rule"></span>
+</div>
 
-{% for post in site.posts limit: 6 %}
+{% assign recent = site.posts | where_exp:"p","p.platform == nil" %}
+{% for post in recent limit: 6 %}
 <div class="post-item">
   <div class="meta">
     {{ post.date | date: "%d %b %Y" }}
@@ -53,5 +71,9 @@ title: Home
   {% endif %}
 </div>
 {% else %}
-<p>Belum ada writeup. Tunggu CTF berikutnya.</p>
+<div class="empty">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 7h16M4 12h16M4 17h10"/><circle cx="19" cy="17" r="3"/><path d="M21.5 19.5 23 21"/></svg>
+  <div class="t">belum ada writeup</div>
+  <div class="h">Arsip masih kosong. Writeup CTF pertama bakal muncul di sini begitu ada.</div>
+</div>
 {% endfor %}

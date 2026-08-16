@@ -15,8 +15,9 @@
 
   <div class="side-h">arsip ctf</div>
   <div class="cat-list">
+    {% assign ctf_all = site.posts | where_exp:"p","p.platform == nil" %}
     {% for y in site.ctf_years %}
-      {% assign yposts = site.posts | where_exp:"p","p.date.year == y" %}
+      {% assign yposts = ctf_all | where_exp:"p","p.date.year == y" %}
       <a href="{{ '/ctf/' | append: y | append: '/' | relative_url }}">
         <span>{{ y }}</span><span class="cnt">{{ yposts.size }}</span>
       </a>

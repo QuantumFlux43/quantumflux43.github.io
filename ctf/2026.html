@@ -8,10 +8,15 @@ permalink: /ctf/2026/
   <h1>ctf 2026</h1>
 </div>
 
-{% assign yposts = site.posts | where_exp:"p","p.date.year == 2026" | sort:"date" | reverse %}
+{% assign ctf_all = site.posts | where_exp:"p","p.platform == nil" %}
+{% assign yposts = ctf_all | where_exp:"p","p.date.year == 2026" | sort:"date" | reverse %}
 
 {% if yposts.size == 0 %}
-<p>Belum ada writeup tahun ini.</p>
+<div class="empty">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M6 9V2h12v7"/><path d="M6 18a2 2 0 0 0-2 2v0a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v0a2 2 0 0 0-2-2"/><path d="M6 14h12"/><path d="M12 22V9"/></svg>
+  <div class="t">belum ada writeup 2026</div>
+  <div class="h">Writeup CTF kripto tahun 2026 bakal muncul di sini.</div>
+</div>
 {% else %}
 {% for post in yposts %}
 <div class="post-item">
