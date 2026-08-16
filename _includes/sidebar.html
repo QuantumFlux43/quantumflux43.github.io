@@ -1,0 +1,33 @@
+<aside class="sidebar">
+  <div class="brand">
+    <div class="prompt">guest@{{ site.author.github | default: "ctf" }}:~$</div>
+    <h1><a href="{{ '/' | relative_url }}">{{ site.title }}</a><span class="cursor"></span></h1>
+    <p class="tagline">{{ site.tagline }}</p>
+  </div>
+
+  <nav class="side-nav">
+    <a href="{{ '/' | relative_url }}" class="{% if page.url == '/' %}active{% endif %}"><span class="pfx">&gt;</span> home</a>
+    <a href="{{ '/categories/' | relative_url }}" class="{% if page.url contains '/categories' %}active{% endif %}"><span class="pfx">&gt;</span> categories</a>
+    <a href="{{ '/tags/' | relative_url }}" class="{% if page.url contains '/tags' %}active{% endif %}"><span class="pfx">&gt;</span> tags</a>
+    <a href="{{ '/about/' | relative_url }}" class="{% if page.url contains '/about' %}active{% endif %}"><span class="pfx">&gt;</span> about</a>
+    <a href="{{ '/feed.xml' | relative_url }}"><span class="pfx">&gt;</span> rss</a>
+  </nav>
+
+  <div class="side-h">Kategori</div>
+  <div class="cat-list">
+    {% assign cats = site.categories_order | default: site.categories %}
+    {% for c in site.categories_order %}
+      {% assign posts_in_cat = site.categories[c] %}
+      {% if posts_in_cat %}
+      <a href="{{ '/categories/' | relative_url }}#{{ c | slugify }}">
+        <span>{{ c }}</span><span class="cnt">{{ posts_in_cat.size }}</span>
+      </a>
+      {% endif %}
+    {% endfor %}
+  </div>
+
+  <div class="side-foot">
+    &copy; {{ site.time | date: '%Y' }} {{ site.author.name }}<br>
+    {% if site.author.github %}<a href="https://github.com/{{ site.author.github }}">github.com/{{ site.author.github }}</a>{% endif %}
+  </div>
+</aside>

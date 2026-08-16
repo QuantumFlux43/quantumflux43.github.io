@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="{{ site.lang | default: 'en' }}">
+{% include head.html %}
+<body>
+<div class="shell">
+  {% include sidebar.html %}
+  <main>
+    <div class="topbar">
+      <button class="btn" onclick="toggleTheme()" id="theme-btn">theme</button>
+    </div>
+    {{ content }}
+    {% include footer.html %}
+  </main>
+</div>
+<script>
+function toggleTheme(){
+  var r = document.documentElement;
+  var cur = r.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+  r.setAttribute('data-theme', cur);
+  localStorage.setItem('theme', cur);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+<script>
+(function(){
+  var body = document.querySelector('.post-body');
+  var tocEl = document.getElementById('toc-list');
+  if(!body || !tocEl) return;
+  var heads = body.querySelectorAll('h2, h3');
+  if(!heads.length){ document.querySelector('.toc-wrap').style.display='none'; return; }
+  heads.forEach(function(h){
+    var a = document.createElement('a');
+    a.href = '#' + h.id;
+    a.textContent = h.textContent;
+    if(h.tagName === 'H3') a.style.paddingLeft = '22px';
+    tocEl.appendChild(a);
+  });
+  var links = [].slice.call(tocEl.querySelectorAll('a'));
+  var obs = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        links.forEach(function(l){ l.classList.remove('on'); });
+        var match = tocEl.querySelector('a[href="#' + e.target.id + '"]');
+        if(match) match.classList.add('on');
+      }
+    });
+  }, { rootMargin: '-10% 0px -75% 0px' });
+  heads.forEach(function(h){ obs.observe(h); });
+})();
+</script>

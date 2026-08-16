@@ -1,0 +1,47 @@
+---
+layout: default
+---
+<article>
+  <div class="post-head">
+    <div class="breadcrumb">
+      <a href="{{ '/' | relative_url }}">home</a> /
+      {% for cat in page.categories %}<a href="{{ '/categories/' | relative_url }}#{{ cat | slugify }}">{{ cat }}</a>{% unless forloop.last %} / {% endunless %}{% endfor %}
+    </div>
+    <h1>{{ page.title }}</h1>
+    <div class="post-meta">
+      <span>📅 {{ page.date | date: "%d %b %Y" }}</span>
+      {% if page.reading_time %}<span>⏱ {{ page.reading_time }} min</span>{% endif %}
+      {% if page.categories %}<span>🗂
+        {% for cat in page.categories %}{{ cat }}{% unless forloop.last %}, {% endunless %}{% endfor %}
+      </span>{% endif %}
+    </div>
+    {% if page.tags %}
+    <div class="tags">
+      {% for tag in page.tags %}<a class="tag-chip" href="{{ '/tags/' | relative_url }}#{{ tag | slugify }}">{{ tag }}</a>{% endfor %}
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="post-wrap">
+    <div class="post-body">
+      {{ content }}
+
+      {% assign next_post = page.next %}
+      {% assign prev_post = page.previous %}
+      {% if next_post or prev_post %}
+      <div class="pn">
+        {% if prev_post %}<a class="from" href="{{ prev_post.url | relative_url }}">← {{ prev_post.title }}</a>{% else %}<span></span>{% endif %}
+        {% if next_post %}<a class="to" href="{{ next_post.url | relative_url }}">{{ next_post.title }} →</a>{% endif %}
+      </div>
+      {% endif %}
+    </div>
+
+    {% if page.toc %}
+    <div class="toc-wrap">
+      <div class="side-h">Di halaman ini</div>
+      <nav id="toc-list"></nav>
+    </div>
+    {% endif %}
+  </div>
+</article>
+{% if page.toc %}{% include toc-script.html %}{% endif %}
