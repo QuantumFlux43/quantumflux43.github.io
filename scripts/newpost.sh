@@ -33,7 +33,7 @@ description:
 ---
 
 <div class="callout info"><span class="lbl">info soal</span>
-<b>CTF:</b> &middot; <b>Kategori:</b> Crypto &middot; <b>Poin:</b>
+<b>CTF:</b> :: <b>Kategori:</b> Crypto :: <b>Poin:</b>
 </div>
 
 ## Soal
