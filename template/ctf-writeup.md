@@ -6,6 +6,14 @@ tags: [tag1, tag2]
 description: Satu kalimat ringkas soal + teknik yang dipakai.
 ---
 
+<!--
+  GAMBAR:
+  1. taruh file di  assets/img/posts/<slug-writeup>/
+     contoh:         assets/img/posts/nama-soal-nama-ctf-2026/net.png
+  2. embed pakai baris di bawah (ganti path + alt text)
+  3. slug = nama file .md tanpa tanggal & tanpa .md
+-->
+
 <div class="callout info"><span class="lbl">info soal</span>
 <b>CTF:</b> Nama CTF 2026 :: <b>Kategori:</b> Crypto :: <b>Poin:</b> 300
 </div>
@@ -18,6 +26,10 @@ Satu paragraf: soalnya apa, celahnya apa, satu kalimat.
 # chall.py
 # tempel bagian yang relevan saja
 ```
+
+Contoh sisipin gambar (hapus kalau tidak perlu):
+
+![deskripsi gambar]({{ "/assets/img/posts/nama-soal-nama-ctf-2026/soal.png" | relative_url }})
 
 ## Analisis
 
