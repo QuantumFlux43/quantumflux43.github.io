@@ -15,11 +15,17 @@
 
   <div class="side-h">arsip ctf</div>
   <div class="cat-list">
-    {% assign ctf_all = site.posts | where_exp:"p","p.platform == nil" %}
     {% for y in site.ctf_years %}
-      {% assign yposts = ctf_all | where_exp:"p","p.date.year == y" %}
+      {% assign ystr = y | append: "" %}
+      {% assign cnt = 0 %}
+      {% for p in site.posts %}
+        {% unless p.platform %}
+          {% assign py = p.date | date: "%Y" %}
+          {% if py == ystr %}{% assign cnt = cnt | plus: 1 %}{% endif %}
+        {% endunless %}
+      {% endfor %}
       <a href="{{ '/ctf/' | append: y | append: '/' | relative_url }}">
-        <span>{{ y }}</span><span class="cnt">{{ yposts.size }}</span>
+        <span>{{ y }}</span><span class="cnt">{{ cnt }}</span>
       </a>
     {% endfor %}
   </div>

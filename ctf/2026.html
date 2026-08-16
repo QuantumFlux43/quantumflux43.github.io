@@ -8,8 +8,13 @@ permalink: /ctf/2026/
   <h1>ctf 2026</h1>
 </div>
 
-{% assign ctf_all = site.posts | where_exp:"p","p.platform == nil" %}
-{% assign yposts = ctf_all | where_exp:"p","p.date.year == 2026" | sort:"date" | reverse %}
+{% assign yposts = "" | split:"" %}
+{% for p in site.posts %}
+  {% unless p.platform %}
+    {% assign py = p.date | date: "%Y" %}
+    {% if py == "2026" %}{% assign yposts = yposts | push: p %}{% endif %}
+  {% endunless %}
+{% endfor %}
 
 {% if yposts.size == 0 %}
 <div class="empty">
