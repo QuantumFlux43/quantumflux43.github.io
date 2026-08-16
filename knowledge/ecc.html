@@ -1,0 +1,26 @@
+---
+layout: default
+title: "Knowledge :: ECC"
+permalink: /knowledge/ecc/
+kn_slug: ecc
+---
+{% assign cat = site.knowledge_cats | where:"slug",page.kn_slug | first %}
+<div class="post-head">
+  <div class="breadcrumb"><a href="{{ '/knowledge/' | relative_url }}">knowledge</a> / ecc</div>
+  <h1>ECC</h1>
+  {% if cat.desc %}<p style="color:var(--fg2);font-size:14px;margin-top:8px">{{ cat.desc }}</p>{% endif %}
+</div>
+
+{% assign kn_posts = site.posts | where:"platform","knowledge" | where:"kn_cat",page.kn_slug %}
+
+{% if kn_posts.size == 0 %}
+<p style="color:var(--fg2)">Belum ada catatan. Tambah post dengan <code>platform: knowledge</code> dan <code>kn_cat: ecc</code> di front matter.</p>
+{% else %}
+<div class="arch-group">
+  <ul>
+    {% for post in kn_posts %}
+    <li><a href="{{ post.url | relative_url }}">{{ post.title }}</a><span class="d">{{ post.date | date: "%d %b %Y" }}</span></li>
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}

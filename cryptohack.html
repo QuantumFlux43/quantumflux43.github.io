@@ -7,33 +7,43 @@ permalink: /cryptohack/
   <div class="breadcrumb">home / cryptohack</div>
   <h1>cryptohack</h1>
   <p style="color:var(--fg2);font-size:14px;margin-top:8px">
-    Profil: <a href="https://cryptohack.org/user/{{ site.cryptohack.username }}/">{{ site.cryptohack.username }}</a>.
-    Angka di bawah diambil dari <code>_config.yml</code> (blok <code>cryptohack:</code>), tinggal edit.
+    Writeup dan catatan challenge dari <a href="https://cryptohack.org/user/{{ site.cryptohack.username }}/">cryptohack.org/{{ site.cryptohack.username }}</a>,
+    dipilah per kategori resmi. Progress angka dari <code>_config.yml</code>.
   </p>
 </div>
 
-<div class="callout info"><span class="lbl">placeholder</span>
-Angka points/rank/solved masih dummy. Ganti di <code>_config.yml</code>.
-</div>
-
-<div class="stat-grid">
-  <div class="stat"><div class="k">points</div><div class="v">{{ site.cryptohack.points }}</div></div>
-  <div class="stat"><div class="k">rank</div><div class="v"><small>#</small>{{ site.cryptohack.rank }}</div></div>
-  <div class="stat"><div class="k">solved</div><div class="v">{{ site.cryptohack.solved }}</div></div>
-</div>
+{% assign ch_posts = site.posts | where:"platform","cryptohack" %}
 
 <h2>progress per kategori</h2>
 {% for cat in site.cryptohack.categories %}
-  {% assign pct = cat.solved | times: 100 | divided_by: cat.total %}
+  {% if cat.total > 0 %}{% assign pct = cat.solved | times: 100 | divided_by: cat.total %}{% else %}{% assign pct = 0 %}{% endif %}
+  {% assign cat_posts = ch_posts | where:"ch_cat",cat.slug %}
   <div class="prog">
     <div class="top">
-      <span class="name">{{ cat.name }}</span>
-      <span class="num">{{ cat.solved }}/{{ cat.total }} ({{ pct }}%)</span>
+      <span class="name">
+        {% if cat_posts.size > 0 %}<a href="#{{ cat.slug }}">{{ cat.name }}</a>{% else %}{{ cat.name }}{% endif %}
+      </span>
+      <span class="num">{{ cat.solved }}/{{ cat.total }} ({{ pct }}%){% if cat_posts.size > 0 %} :: {{ cat_posts.size }} writeup{% endif %}</span>
     </div>
     <div class="bar"><div class="fill" style="width:{{ pct }}%"></div></div>
   </div>
 {% endfor %}
 
-<h2>catatan</h2>
-<!-- isi catatan cryptohack di sini -->
-
+<h2>writeup</h2>
+{% if ch_posts.size == 0 %}
+<p style="color:var(--fg2)">Belum ada writeup. Tambah post dengan <code>platform: cryptohack</code> dan <code>ch_cat: &lt;slug&gt;</code> di front matter.</p>
+{% else %}
+  {% for cat in site.cryptohack.categories %}
+    {% assign cat_posts = ch_posts | where:"ch_cat",cat.slug %}
+    {% if cat_posts.size > 0 %}
+    <div class="arch-group" id="{{ cat.slug }}">
+      <h2>{{ cat.name }}</h2>
+      <ul>
+        {% for post in cat_posts %}
+        <li><a href="{{ post.url | relative_url }}">{{ post.title }}</a><span class="d">{{ post.date | date: "%d %b %Y" }}</span></li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+  {% endfor %}
+{% endif %}

@@ -9,50 +9,34 @@ title: Home
   <p>{{ site.description }}</p>
 </section>
 
-{% assign total_posts = site.posts | size %}
-<div class="stat-grid">
-  <div class="stat">
-    <div class="k">writeups</div>
-    <div class="v">{{ total_posts }}</div>
-  </div>
-  <div class="stat">
-    <div class="k">cryptohack pts</div>
-    <div class="v">{{ site.cryptohack.points }}</div>
-  </div>
-  <div class="stat">
-    <div class="k">ch solved</div>
-    <div class="v">{{ site.cryptohack.solved }}</div>
-  </div>
-  <div class="stat">
-    <div class="k">ctf years</div>
-    <div class="v">{{ site.ctf_years | size }}</div>
-  </div>
-</div>
-
 <div class="zone-grid">
   <a class="zone" href="{{ '/cryptohack/' | relative_url }}">
-    <div class="ico">[ 0x01 ]</div>
+    <div class="num">01</div>
     <h3>CryptoHack</h3>
-    <p>Progress per kategori, solve favorit, dan catatan tiap challenge yang gua kerjain.</p>
-    <span class="go">cd cryptohack/ &gt;</span>
+    <p>Progress per kategori dan writeup tiap challenge yang gua kerjain.</p>
+    <span class="go">buka
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </span>
   </a>
   <a class="zone" href="{{ '/ctf/' | relative_url }}">
-    <div class="ico">[ 0x02 ]</div>
+    <div class="num">02</div>
     <h3>CTF Archives</h3>
-    <p>Writeup soal kripto dari CTF, diarsipin per tahun. Solver, math, sampai flag.</p>
-    <span class="go">cd ctf/ &gt;</span>
+    <p>Writeup soal kripto dari CTF, diarsip per tahun. Solver, math, sampai flag.</p>
+    <span class="go">buka
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </span>
   </a>
   <a class="zone" href="{{ '/knowledge/' | relative_url }}">
-    <div class="ico">[ 0x03 ]</div>
+    <div class="num">03</div>
     <h3>Crypto Knowledge</h3>
     <p>Rangkuman serangan dan teori: RSA, AES, ECC, hash, PRNG, lattice.</p>
-    <span class="go">cd knowledge/ &gt;</span>
+    <span class="go">buka
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </span>
   </a>
 </div>
 
-<div class="post-head" style="margin-bottom:18px">
-  <div class="breadcrumb">$ ls -lt ~/writeups | head</div>
-</div>
+<h2 style="margin-top:0">terbaru</h2>
 
 {% for post in site.posts limit: 6 %}
 <div class="post-item">
@@ -64,7 +48,7 @@ title: Home
   {% if post.description %}<p>{{ post.description }}</p>{% else %}<p>{{ post.excerpt | strip_html | truncatewords: 26 }}</p>{% endif %}
   {% if post.tags %}
   <div class="tags">
-    {% for tag in post.tags %}<a class="tag-chip" href="{{ '/tags/' | relative_url }}#{{ tag | slugify }}">{{ tag }}</a>{% endfor %}
+    {% for tag in post.tags %}<span class="tag-chip">{{ tag }}</span>{% endfor %}
   </div>
   {% endif %}
 </div>

@@ -18,7 +18,7 @@ author:
   name: quantumflux43
   github: quantumflux43
 
-# Kategori kripto (dipakai sidebar & halaman /categories/).
+# Kategori kripto (dipakai buat tag writeup CTF).
 categories_order:
   - RSA
   - AES
@@ -32,21 +32,34 @@ categories_order:
 ctf_years:
   - 2026
 
-# Progress CryptoHack. Update angka kalau naik.
+# Kategori Crypto Knowledge. Tiap kategori punya halaman sendiri /knowledge/<slug>/.
+# Artikel = post dengan front matter: platform: knowledge, kn_cat: <slug>
+knowledge_cats:
+  - { name: "RSA",     slug: "rsa",     desc: "Faktorisasi, exponent kecil, Coppersmith, oracle." }
+  - { name: "AES",     slug: "aes",     desc: "Mode operasi, padding oracle, bit-flip, GCM." }
+  - { name: "ECC",     slug: "ecc",     desc: "Serangan kurva, invalid curve, nonce bias." }
+  - { name: "Hash",    slug: "hash",    desc: "Length extension, kolisi, MAC forgery." }
+  - { name: "PRNG",    slug: "prng",    desc: "Mersenne Twister, LCG, prediksi state." }
+  - { name: "Lattice", slug: "lattice", desc: "LLL, CVP, hidden number problem." }
+
+# Progress CryptoHack. Total challenge sesuai kategori resmi cryptohack.org.
+# Update angka "solved" kalau naik. slug dipakai buat filter writeup.
 cryptohack:
   username: quantumflux43
-  points: 1337
-  rank: 420
-  solved: 84
   categories:
-    - { name: "Introduction",   solved: 9,  total: 9 }
-    - { name: "General",        solved: 18, total: 22 }
-    - { name: "Mathematics",    solved: 12, total: 20 }
-    - { name: "Symmetric",      solved: 14, total: 24 }
-    - { name: "RSA",            solved: 16, total: 28 }
-    - { name: "Diffie-Hellman", solved: 8,  total: 14 }
-    - { name: "Elliptic Curves", solved: 5, total: 16 }
-    - { name: "Hash Functions", solved: 2,  total: 8 }
+    - { name: "Introduction",       slug: "introduction",   solved: 0, total: 3 }
+    - { name: "General",            slug: "general",        solved: 0, total: 19 }
+    - { name: "Symmetric Ciphers",  slug: "symmetric",      solved: 0, total: 27 }
+    - { name: "Mathematics",        slug: "mathematics",    solved: 0, total: 15 }
+    - { name: "RSA",                slug: "rsa",            solved: 0, total: 29 }
+    - { name: "Diffie-Hellman",     slug: "diffie-hellman", solved: 0, total: 14 }
+    - { name: "Elliptic Curves",    slug: "elliptic-curves", solved: 0, total: 23 }
+    - { name: "Hash Functions",     slug: "hash-functions", solved: 0, total: 14 }
+    - { name: "Crypto on the Web",  slug: "crypto-web",     solved: 0, total: 17 }
+    - { name: "Lattices",           slug: "lattices",       solved: 0, total: 18 }
+    - { name: "Isogenies",          slug: "isogenies",      solved: 0, total: 23 }
+    - { name: "Zero-Knowledge Proofs", slug: "zkp",         solved: 0, total: 17 }
+    - { name: "Miscellaneous",      slug: "misc",           solved: 0, total: 14 }
 
 markdown: kramdown
 kramdown:
@@ -72,7 +85,6 @@ defaults:
 
 # Hanya plugin whitelist GitHub Pages supaya build otomatis jalan.
 plugins:
-  - jekyll-feed
   - jekyll-sitemap
   - jekyll-seo-tag
 
@@ -83,3 +95,5 @@ exclude:
   - BACA-DULU.md
   - vendor
   - node_modules
+  - scripts
+  - template

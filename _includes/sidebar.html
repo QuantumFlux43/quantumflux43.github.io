@@ -10,10 +10,7 @@
     <a href="{{ '/cryptohack/' | relative_url }}" class="{% if page.url contains '/cryptohack' %}active{% endif %}"><span class="pfx">&gt;</span> cryptohack</a>
     <a href="{{ '/ctf/' | relative_url }}" class="{% if page.url contains '/ctf' %}active{% endif %}"><span class="pfx">&gt;</span> ctf archives</a>
     <a href="{{ '/knowledge/' | relative_url }}" class="{% if page.url contains '/knowledge' %}active{% endif %}"><span class="pfx">&gt;</span> knowledge</a>
-    <a href="{{ '/categories/' | relative_url }}" class="{% if page.url contains '/categories' %}active{% endif %}"><span class="pfx">&gt;</span> categories</a>
-    <a href="{{ '/tags/' | relative_url }}" class="{% if page.url contains '/tags' %}active{% endif %}"><span class="pfx">&gt;</span> tags</a>
     <a href="{{ '/about/' | relative_url }}" class="{% if page.url contains '/about' %}active{% endif %}"><span class="pfx">&gt;</span> about</a>
-    <a href="{{ '/feed.xml' | relative_url }}"><span class="pfx">&gt;</span> rss</a>
   </nav>
 
   <div class="side-h">arsip ctf</div>
@@ -23,18 +20,6 @@
       <a href="{{ '/ctf/' | append: y | append: '/' | relative_url }}">
         <span>{{ y }}</span><span class="cnt">{{ yposts.size }}</span>
       </a>
-    {% endfor %}
-  </div>
-
-  <div class="side-h">kategori</div>
-  <div class="cat-list">
-    {% for c in site.categories_order %}
-      {% assign posts_in_cat = site.categories[c] %}
-      {% if posts_in_cat %}
-      <a href="{{ '/categories/' | relative_url }}#{{ c | slugify }}">
-        <span>{{ c }}</span><span class="cnt">{{ posts_in_cat.size }}</span>
-      </a>
-      {% endif %}
     {% endfor %}
   </div>
 
