@@ -13,10 +13,13 @@ permalink: /knowledge/
 
 {% assign kn_posts = site.posts | where:"platform","knowledge" %}
 
+{% assign zcolors = "zc-cyan,zc-green,zc-purple,zc-gold,zc-pink,zc-red" | split: "," %}
 <div class="zone-grid">
   {% for cat in site.knowledge_cats %}
     {% assign cat_posts = kn_posts | where:"kn_cat",cat.slug %}
-    <a class="zone" href="{{ '/knowledge/' | append: cat.slug | append: '/' | relative_url }}">
+    {% assign zidx = forloop.index0 | modulo: 6 %}
+    {% assign zc = zcolors[zidx] %}
+    <a class="zone {{ zc }}" href="{{ '/knowledge/' | append: cat.slug | append: '/' | relative_url }}">
       <div class="num">{{ cat_posts.size }} catatan</div>
       <h3>{{ cat.name }}</h3>
       <p>{{ cat.desc }}</p>

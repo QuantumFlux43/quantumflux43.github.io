@@ -6,11 +6,11 @@
   </div>
 
   <nav class="side-nav">
-    <a href="{{ '/' | relative_url }}" class="{% if page.url == '/' %}active{% endif %}"><span class="pfx">&gt;</span> home</a>
-    <a href="{{ '/cryptohack/' | relative_url }}" class="{% if page.url contains '/cryptohack' %}active{% endif %}"><span class="pfx">&gt;</span> cryptohack</a>
-    <a href="{{ '/ctf/' | relative_url }}" class="{% if page.url contains '/ctf' %}active{% endif %}"><span class="pfx">&gt;</span> ctf archives</a>
-    <a href="{{ '/knowledge/' | relative_url }}" class="{% if page.url contains '/knowledge' %}active{% endif %}"><span class="pfx">&gt;</span> knowledge</a>
-    <a href="{{ '/about/' | relative_url }}" class="{% if page.url contains '/about' %}active{% endif %}"><span class="pfx">&gt;</span> about</a>
+    <a href="{{ '/' | relative_url }}" class="nc-cyan {% if page.url == '/' %}active{% endif %}"><span class="pfx">&gt;</span> home</a>
+    <a href="{{ '/cryptohack/' | relative_url }}" class="nc-pink {% if page.url contains '/cryptohack' %}active{% endif %}"><span class="pfx">&gt;</span> cryptohack</a>
+    <a href="{{ '/ctf/' | relative_url }}" class="nc-gold {% if page.url contains '/ctf' %}active{% endif %}"><span class="pfx">&gt;</span> ctf archives</a>
+    <a href="{{ '/knowledge/' | relative_url }}" class="nc-purple {% if page.url contains '/knowledge' %}active{% endif %}"><span class="pfx">&gt;</span> knowledge</a>
+    <a href="{{ '/about/' | relative_url }}" class="nc-green {% if page.url contains '/about' %}active{% endif %}"><span class="pfx">&gt;</span> about</a>
   </nav>
 
   <div class="side-h">arsip ctf</div>
