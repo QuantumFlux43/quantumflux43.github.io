@@ -1,0 +1,39 @@
+---
+layout: default
+title: CryptoHack
+permalink: /cryptohack/
+---
+<div class="post-head">
+  <div class="breadcrumb">home / cryptohack</div>
+  <h1>cryptohack</h1>
+  <p style="color:var(--fg2);font-size:14px;margin-top:8px">
+    Profil: <a href="https://cryptohack.org/user/{{ site.cryptohack.username }}/">{{ site.cryptohack.username }}</a>.
+    Angka di bawah diambil dari <code>_config.yml</code> (blok <code>cryptohack:</code>), tinggal edit.
+  </p>
+</div>
+
+<div class="callout info"><span class="lbl">placeholder</span>
+Angka points/rank/solved masih dummy. Ganti di <code>_config.yml</code>.
+</div>
+
+<div class="stat-grid">
+  <div class="stat"><div class="k">points</div><div class="v">{{ site.cryptohack.points }}</div></div>
+  <div class="stat"><div class="k">rank</div><div class="v"><small>#</small>{{ site.cryptohack.rank }}</div></div>
+  <div class="stat"><div class="k">solved</div><div class="v">{{ site.cryptohack.solved }}</div></div>
+</div>
+
+<h2>progress per kategori</h2>
+{% for cat in site.cryptohack.categories %}
+  {% assign pct = cat.solved | times: 100 | divided_by: cat.total %}
+  <div class="prog">
+    <div class="top">
+      <span class="name">{{ cat.name }}</span>
+      <span class="num">{{ cat.solved }}/{{ cat.total }} ({{ pct }}%)</span>
+    </div>
+    <div class="bar"><div class="fill" style="width:{{ pct }}%"></div></div>
+  </div>
+{% endfor %}
+
+<h2>catatan</h2>
+<!-- isi catatan cryptohack di sini -->
+

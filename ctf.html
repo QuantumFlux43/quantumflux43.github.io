@@ -1,0 +1,22 @@
+---
+layout: default
+title: CTF Archives
+permalink: /ctf/
+---
+<div class="post-head">
+  <div class="breadcrumb">home / ctf</div>
+  <h1>ctf archives</h1>
+  <p style="color:var(--fg2);font-size:14px;margin-top:8px">
+    Writeup soal kripto dari tiap CTF yang gua ikutin, dipilah per tahun.
+  </p>
+</div>
+
+<div class="year-grid">
+  {% for y in site.ctf_years %}
+    {% assign yposts = site.posts | where_exp:"p","p.date.year == y" %}
+    <a class="year-card" href="{{ '/ctf/' | append: y | append: '/' | relative_url }}">
+      <div class="y">{{ y }}</div>
+      <div class="n">{{ yposts.size }} writeup</div>
+    </a>
+  {% endfor %}
+</div>

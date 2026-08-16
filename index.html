@@ -2,18 +2,66 @@
 layout: default
 title: Home
 ---
-<div class="post-head" style="margin-bottom:22px">
-  <div class="breadcrumb">$ ls -la ~/writeups</div>
+<section class="hero">
+  <div class="line"><span class="d">$</span> <span class="g">whoami</span></div>
+  <div class="line">{{ site.author.github }} <span class="d">// crypto player, ctf grinder</span></div>
+  <h1>{{ site.title }}</h1>
+  <p>{{ site.description }}</p>
+</section>
+
+{% assign total_posts = site.posts | size %}
+<div class="stat-grid">
+  <div class="stat">
+    <div class="k">writeups</div>
+    <div class="v">{{ total_posts }}</div>
+  </div>
+  <div class="stat">
+    <div class="k">cryptohack pts</div>
+    <div class="v">{{ site.cryptohack.points }}</div>
+  </div>
+  <div class="stat">
+    <div class="k">ch solved</div>
+    <div class="v">{{ site.cryptohack.solved }}</div>
+  </div>
+  <div class="stat">
+    <div class="k">ctf years</div>
+    <div class="v">{{ site.ctf_years | size }}</div>
+  </div>
 </div>
 
-{% for post in site.posts %}
+<div class="zone-grid">
+  <a class="zone" href="{{ '/cryptohack/' | relative_url }}">
+    <div class="ico">[ 0x01 ]</div>
+    <h3>CryptoHack</h3>
+    <p>Progress per kategori, solve favorit, dan catatan tiap challenge yang gua kerjain.</p>
+    <span class="go">cd cryptohack/ &gt;</span>
+  </a>
+  <a class="zone" href="{{ '/ctf/' | relative_url }}">
+    <div class="ico">[ 0x02 ]</div>
+    <h3>CTF Archives</h3>
+    <p>Writeup soal kripto dari CTF, diarsipin per tahun. Solver, math, sampai flag.</p>
+    <span class="go">cd ctf/ &gt;</span>
+  </a>
+  <a class="zone" href="{{ '/knowledge/' | relative_url }}">
+    <div class="ico">[ 0x03 ]</div>
+    <h3>Crypto Knowledge</h3>
+    <p>Rangkuman serangan dan teori: RSA, AES, ECC, hash, PRNG, lattice.</p>
+    <span class="go">cd knowledge/ &gt;</span>
+  </a>
+</div>
+
+<div class="post-head" style="margin-bottom:18px">
+  <div class="breadcrumb">$ ls -lt ~/writeups | head</div>
+</div>
+
+{% for post in site.posts limit: 6 %}
 <div class="post-item">
   <div class="meta">
     {{ post.date | date: "%d %b %Y" }}
-    {% if post.categories %} · {% for c in post.categories %}<span class="cat">{{ c }}</span>{% unless forloop.last %}, {% endunless %}{% endfor %}{% endif %}
+    {% if post.categories %} :: {% for c in post.categories %}<span class="cat">{{ c }}</span>{% unless forloop.last %}, {% endunless %}{% endfor %}{% endif %}
   </div>
   <h2><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h2>
-  {% if post.description %}<p>{{ post.description }}</p>{% else %}<p>{{ post.excerpt | strip_html | truncatewords: 28 }}</p>{% endif %}
+  {% if post.description %}<p>{{ post.description }}</p>{% else %}<p>{{ post.excerpt | strip_html | truncatewords: 26 }}</p>{% endif %}
   {% if post.tags %}
   <div class="tags">
     {% for tag in post.tags %}<a class="tag-chip" href="{{ '/tags/' | relative_url }}#{{ tag | slugify }}">{{ tag }}</a>{% endfor %}
@@ -21,5 +69,5 @@ title: Home
   {% endif %}
 </div>
 {% else %}
-<p>Belum ada writeup. Tinggal tunggu CTF berikutnya.</p>
+<p>Belum ada writeup. Tunggu CTF berikutnya.</p>
 {% endfor %}

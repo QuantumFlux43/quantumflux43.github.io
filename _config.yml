@@ -1,25 +1,24 @@
 # ============================================================
-#  Konfigurasi utama. Ganti nilai di bawah sesuai akun kamu.
+#  Site config. Ubah nilai di bawah sesuai kebutuhan.
 # ============================================================
 
-title: "dar"
-tagline: "root@ctf:~$ crypto writeups"
+title: "quantumflux43"
+tagline: "root@crypto:~# breaking ciphers for fun"
 description: >-
-  Catatan dan writeup soal kriptografi dari berbagai CTF —
-  RSA, AES, ECC, hash, dan PRNG.
+  Catatan kripto: progress CryptoHack, arsip writeup CTF per tahun,
+  dan dump ilmu soal RSA, AES, ECC, hash, PRNG, sampai lattice.
 
-url: "https://USERNAME.github.io"
+url: "https://quantumflux43.github.io"
 baseurl: ""
 
 lang: id
 timezone: Asia/Jakarta
 
 author:
-  name: dar
-  github: USERNAME
+  name: quantumflux43
+  github: quantumflux43
 
-# Kategori resmi (dipakai sidebar & halaman /categories/).
-# Urutan di sini menentukan urutan tampil di sidebar.
+# Kategori kripto (dipakai sidebar & halaman /categories/).
 categories_order:
   - RSA
   - AES
@@ -28,6 +27,26 @@ categories_order:
   - PRNG
   - Lattice
   - Misc
+
+# Tahun arsip CTF. Tambah tahun baru di paling atas.
+ctf_years:
+  - 2026
+
+# Progress CryptoHack. Update angka kalau naik.
+cryptohack:
+  username: quantumflux43
+  points: 1337
+  rank: 420
+  solved: 84
+  categories:
+    - { name: "Introduction",   solved: 9,  total: 9 }
+    - { name: "General",        solved: 18, total: 22 }
+    - { name: "Mathematics",    solved: 12, total: 20 }
+    - { name: "Symmetric",      solved: 14, total: 24 }
+    - { name: "RSA",            solved: 16, total: 28 }
+    - { name: "Diffie-Hellman", solved: 8,  total: 14 }
+    - { name: "Elliptic Curves", solved: 5, total: 16 }
+    - { name: "Hash Functions", solved: 2,  total: 8 }
 
 markdown: kramdown
 kramdown:
@@ -51,8 +70,7 @@ defaults:
     values:
       layout: page
 
-# Hanya plugin yang di-whitelist GitHub Pages — supaya build otomatis
-# (tanpa custom Actions workflow) tetap jalan.
+# Hanya plugin whitelist GitHub Pages supaya build otomatis jalan.
 plugins:
   - jekyll-feed
   - jekyll-sitemap
@@ -62,5 +80,6 @@ exclude:
   - Gemfile
   - Gemfile.lock
   - README.md
+  - BACA-DULU.md
   - vendor
   - node_modules

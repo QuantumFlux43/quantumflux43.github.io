@@ -1,5 +1,5 @@
 ---
-title: "NAMA SOAL — NAMA CTF 2026"
+title: "NAMA SOAL :: NAMA CTF 2026"
 date: 2026-08-16 20:00:00 +0700
 categories: [RSA]
 tags: [tag1, tag2]
@@ -7,7 +7,7 @@ description: Satu kalimat ringkas soal + teknik yang dipakai.
 ---
 
 <div class="callout info"><span class="lbl">info soal</span>
-<b>CTF:</b> Nama CTF 2026 &middot; <b>Kategori:</b> Crypto &middot; <b>Poin:</b> 300
+<b>CTF:</b> Nama CTF 2026 :: <b>Kategori:</b> Crypto :: <b>Poin:</b> 300
 </div>
 
 Satu paragraf: soalnya apa, celahnya apa, satu kalimat.
@@ -21,7 +21,7 @@ Satu paragraf: soalnya apa, celahnya apa, satu kalimat.
 
 ## Analisis
 
-Kenapa curiga ke arah tertentu — bukan cuma apa yang akhirnya berhasil.
+Kenapa curiga ke arah tertentu, bukan cuma apa yang akhirnya berhasil.
 Tulis juga jalan buntu yang sempat dicoba.
 
 ## Dasar matematika
