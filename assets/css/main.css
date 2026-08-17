@@ -70,7 +70,7 @@ code,pre,kbd{font-family:var(--mono)}
   transition:border-color .15s,background .15s}
 .brand-card:hover{border-color:var(--acc);background:var(--bg3);text-decoration:none}
 .brand-avatar{width:46px;height:46px;border-radius:10px;border:1px solid var(--line);
-  flex:0 0 auto}
+  flex:0 0 auto;image-rendering:pixelated}
 .brand-card:hover .brand-avatar{border-color:var(--acc)}
 .brand-meta{min-width:0}
 .brand-name{font-size:15px;font-weight:600;color:var(--fg);letter-spacing:-.01em;
@@ -382,7 +382,7 @@ pre code{background:none;color:var(--fg);padding:0}
 .about-hero::after{content:"";position:absolute;inset:0;pointer-events:none;
   background:radial-gradient(120% 90% at 100% 0%,color-mix(in srgb,var(--acc) 12%,transparent),transparent 55%)}
 .about-avatar{width:112px;height:112px;border-radius:16px;border:1px solid var(--line);
-  flex:0 0 auto;position:relative}
+  flex:0 0 auto;position:relative;image-rendering:pixelated}
 .about-intro{position:relative;min-width:0}
 .about-intro h1{font-size:26px;margin:0;letter-spacing:-.02em}
 .about-intro .role{color:var(--acc);font-size:13px;margin:4px 0 12px}
