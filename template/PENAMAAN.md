@@ -44,35 +44,47 @@ diffie-hellman | elliptic-curves | hash-functions | crypto-web |
 lattices | isogenies | zkp | misc
 ```
 
-Template siap pakai (sudah bilingual):
-- `template/ctf-writeup.md`
-- `template/cryptohack-writeup.md`
-- `template/knowledge.md`
+## 2b. Writeup bilingual (dua file: ID + EN)
 
-## 2b. Writeup bilingual (EN/ID)
+Tiap writeup ditulis di DUA file terpisah: satu Indonesia, satu Inggris. Toggle
+bahasa EN/ID di situs otomatis pindah antar keduanya.
 
-Situs punya toggle bahasa EN/ID. Isi writeup ikut ganti bahasa kalau prosa
-ditulis dua kali dalam blok bahasa:
-
-```markdown
-<div class="lang-en" markdown="1">
-English prose here. Full markdown works.
-</div>
-<div class="lang-id" markdown="1">
-Teks Indonesia di sini. Markdown penuh jalan.
-</div>
+Pola nama file:
+```
+_posts/2026-08-16-slug.md       -> versi Indonesia
+_posts/2026-08-16-slug-en.md    -> versi Inggris (nama sama + "-en")
 ```
 
-Aturan:
-- `markdown="1"` WAJIB, kalau tidak isi blok tidak dirender sebagai markdown.
-- Heading (`## ...`), code block, dan rumus `$$...$$` cukup ditulis SEKALI di
-  luar blok bahasa. Tidak perlu diterjemahin (universal).
-- Untuk teks pendek inline (dalam kalimat / callout), pakai span:
-  `<span class="lang-en">open</span><span class="lang-id">buka</span>`
-- Bahasa default situs = EN. Kalau lupa nulis blok `lang-en`, teks Indonesia
-  tetap tampil (tidak hilang), cuma tidak ikut ganti saat toggle.
+Front matter WAJIB di kedua file:
+```yaml
+lang: id            # atau: en   (harus beda antar pasangan)
+ref: slug-unik      # HARUS SAMA persis di kedua file (ini penghubungnya)
+```
+Field lain (title, date, categories/ch_cat/kn_cat, tags) tetap seperti biasa.
 
-Contoh lengkap: lihat `_posts/2026-08-16-easy-babyrsa-cube-root.md`.
+Aturan:
+- `ref` yang sama = pasangan bahasa. Toggle EN/ID di halaman post pindah ke
+  file pasangannya. Kalau `ref` beda / salah ketik, tombol pindah bahasa tidak
+  muncul.
+- Di list/arsip cuma tampil post sesuai bahasa aktif (yang satunya disembunyiin).
+- Kalau cuma bikin satu bahasa, boleh. Nanti tinggal tambah file `-en.md`
+  dengan `ref` sama kapan aja.
+- Isi tiap file MURNI satu bahasa, markdown biasa, tanpa blok `lang-en/lang-id`.
+
+Template siap copas (per bahasa):
+- CTF        : `template/ctf-id.md`        + `template/ctf-en.md`
+- CryptoHack : `template/cryptohack-id.md` + `template/cryptohack-en.md`
+- Knowledge  : `template/knowledge-id.md`  + `template/knowledge-en.md`
+
+Cara tercepat (bikin dua file sekaligus, ref otomatis sama):
+```
+./scripts/newpost.sh ctf RSA "Judul Soal - Nama CTF 2026"
+./scripts/newpost.sh cryptohack rsa "Judul Challenge"
+./scripts/newpost.sh knowledge ecc "Judul Materi"
+```
+
+Contoh lengkap: `_posts/2026-08-16-easy-babyrsa-cube-root.md` (ID) +
+`_posts/2026-08-16-easy-babyrsa-cube-root-en.md` (EN).
 
 ## 3. Gambar
 

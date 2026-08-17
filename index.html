@@ -69,8 +69,12 @@ title: Home
 </div>
 
 {% assign recent = site.posts | where_exp:"p","p.platform == nil" %}
-{% for post in recent limit: 6 %}
-<div class="post-item">
+{% assign shown_en = 0 %}{% assign shown_id = 0 %}
+{% for post in recent %}
+  {% assign plang = post.lang | default: "id" %}
+  {% if plang == "en" %}{% if shown_en >= 6 %}{% continue %}{% endif %}{% assign shown_en = shown_en | plus: 1 %}
+  {% else %}{% if shown_id >= 6 %}{% continue %}{% endif %}{% assign shown_id = shown_id | plus: 1 %}{% endif %}
+<div class="post-item plang-{{ plang }}">
   <div class="meta">
     {{ post.date | date: "%d %b %Y" }}
     {% if post.categories %} :: {% for c in post.categories %}<span class="cat">{{ c }}</span>{% unless forloop.last %}, {% endunless %}{% endfor %}{% endif %}

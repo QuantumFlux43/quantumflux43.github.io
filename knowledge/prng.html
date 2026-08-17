@@ -12,24 +12,32 @@ kn_slug: prng
 </div>
 
 {% assign kn_posts = site.posts | where:"platform","knowledge" | where:"kn_cat",page.kn_slug %}
+{% assign n_en = 0 %}{% assign n_id = 0 %}
+{% for p in kn_posts %}{% assign pl = p.lang | default: "id" %}{% if pl == "en" %}{% assign n_en = n_en | plus: 1 %}{% else %}{% assign n_id = n_id | plus: 1 %}{% endif %}{% endfor %}
 
 <div class="sec-title">
   <h2><span class="lang-en">notes</span><span class="lang-id">catatan</span></h2>
   <span class="cmd">$ ls ~/knowledge/prng</span>
   <span class="rule"></span>
 </div>
-{% if kn_posts.size == 0 %}
-<div class="empty">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-  <div class="t"><span class="lang-en">no PRNG notes yet</span><span class="lang-id">belum ada catatan PRNG</span></div>
-  <div class="h"><span class="lang-en">Add a post with <code>platform: knowledge</code> and <code>kn_cat: prng</code> in the front matter.</span><span class="lang-id">Tambah post dengan <code>platform: knowledge</code> dan <code>kn_cat: prng</code> di front matter.</span></div>
-</div>
-{% else %}
-<div class="arch-group">
-  <ul>
-    {% for post in kn_posts %}
-    <li><a href="{{ post.url | relative_url }}">{{ post.title }}</a><span class="d">{{ post.date | date: "%d %b %Y" }}</span></li>
-    {% endfor %}
-  </ul>
-</div>
-{% endif %}
+{% assign langs = "en,id" | split: "," %}
+{% for L in langs %}
+  {% if L == "en" %}{% assign lc = n_en %}{% else %}{% assign lc = n_id %}{% endif %}
+  <div class="plang-{{ L }}">
+  {% if lc == 0 %}
+  <div class="empty">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+    <div class="t">{% if L == "en" %}no PRNG notes yet{% else %}belum ada catatan PRNG{% endif %}</div>
+    <div class="h">{% if L == "en" %}Add a post with <code>platform: knowledge</code>, <code>kn_cat: prng</code>, <code>lang: </code>.{% else %}Tambah post dengan <code>platform: knowledge</code>, <code>kn_cat: prng</code>, <code>lang: </code>.{% endif %}</div>
+  </div>
+  {% else %}
+  <div class="arch-group">
+    <ul>
+      {% for post in kn_posts %}{% assign pl = post.lang | default: "id" %}{% if pl == L %}
+      <li><a href="{{ post.url | relative_url }}">{{ post.title }}</a><span class="d">{{ post.date | date: "%d %b %Y" }}</span></li>
+      {% endif %}{% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+  </div>
+{% endfor %}

@@ -20,24 +20,32 @@ ch_slug: zkp
 </div>
 
 {% assign ch_posts = site.posts | where:"platform","cryptohack" | where:"ch_cat",page.ch_slug %}
+{% assign n_en = 0 %}{% assign n_id = 0 %}
+{% for p in ch_posts %}{% assign pl = p.lang | default: "id" %}{% if pl == "en" %}{% assign n_en = n_en | plus: 1 %}{% else %}{% assign n_id = n_id | plus: 1 %}{% endif %}{% endfor %}
 
 <div class="sec-title">
   <h2>writeup</h2>
   <span class="cmd">$ grep zkp ~/cryptohack</span>
   <span class="rule"></span>
 </div>
-{% if ch_posts.size == 0 %}
-<div class="empty">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 13l2 2 4-4"/></svg>
-  <div class="t"><span class="lang-en">no Zero-Knowledge Proofs writeups yet</span><span class="lang-id">belum ada writeup Zero-Knowledge Proofs</span></div>
-  <div class="h"><span class="lang-en">Add a post with <code>platform: cryptohack</code> and <code>ch_cat: zkp</code> in the front matter.</span><span class="lang-id">Tambah post dengan <code>platform: cryptohack</code> dan <code>ch_cat: zkp</code> di front matter.</span></div>
-</div>
-{% else %}
-<div class="arch-group">
-  <ul>
-    {% for post in ch_posts %}
-    <li><a href="{{ post.url | relative_url }}">{{ post.title }}</a><span class="d">{{ post.date | date: "%d %b %Y" }}</span></li>
-    {% endfor %}
-  </ul>
-</div>
-{% endif %}
+{% assign langs = "en,id" | split: "," %}
+{% for L in langs %}
+  {% if L == "en" %}{% assign lc = n_en %}{% else %}{% assign lc = n_id %}{% endif %}
+  <div class="plang-{{ L }}">
+  {% if lc == 0 %}
+  <div class="empty">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 13l2 2 4-4"/></svg>
+    <div class="t">{% if L == "en" %}no Zero-Knowledge Proofs writeups yet{% else %}belum ada writeup Zero-Knowledge Proofs{% endif %}</div>
+    <div class="h">{% if L == "en" %}Add a post with <code>platform: cryptohack</code>, <code>ch_cat: zkp</code>, <code>lang: </code>.{% else %}Tambah post dengan <code>platform: cryptohack</code>, <code>ch_cat: zkp</code>, <code>lang: </code>.{% endif %}</div>
+  </div>
+  {% else %}
+  <div class="arch-group">
+    <ul>
+      {% for post in ch_posts %}{% assign pl = post.lang | default: "id" %}{% if pl == L %}
+      <li><a href="{{ post.url | relative_url }}">{{ post.title }}</a><span class="d">{{ post.date | date: "%d %b %Y" }}</span></li>
+      {% endif %}{% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+  </div>
+{% endfor %}

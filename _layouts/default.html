@@ -45,6 +45,13 @@ function setLang(l){
   document.documentElement.setAttribute('data-lang', l);
   localStorage.setItem('lang', l);
   syncLangBtn(l);
+  // kalau lagi di halaman post dan post ini punya versi bahasa lain, pindah ke sana
+  var art = document.querySelector('article[data-post-lang]');
+  if(art){
+    var pl = art.getAttribute('data-post-lang');
+    var alt = art.getAttribute('data-alt-url');
+    if(pl && pl !== l && alt){ window.location.href = alt; }
+  }
 }
 function syncLangBtn(l){
   var btns = document.querySelectorAll('.langtog button');
@@ -53,6 +60,16 @@ function syncLangBtn(l){
   }
 }
 syncLangBtn(document.documentElement.getAttribute('data-lang') || 'en');
+// auto-arahin ke versi bahasa yang dipilih user saat buka post (kalau tersedia)
+(function(){
+  var pref = localStorage.getItem('lang') || 'en';
+  var art = document.querySelector('article[data-post-lang]');
+  if(art){
+    var pl = art.getAttribute('data-post-lang');
+    var alt = art.getAttribute('data-alt-url');
+    if(pl && pl !== pref && alt){ window.location.replace(alt); }
+  }
+})();
 (function(){
   var hamb = document.getElementById('hamb');
   var scrim = document.getElementById('scrim');

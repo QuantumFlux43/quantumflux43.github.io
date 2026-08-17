@@ -13,10 +13,15 @@ permalink: /ctf/2026/
 </div>
 
 {% assign yposts = "" | split:"" %}
+{% assign n_en = 0 %}{% assign n_id = 0 %}
 {% for p in site.posts %}
   {% unless p.platform %}
     {% assign py = p.date | date: "%Y" %}
-    {% if py == "2026" %}{% assign yposts = yposts | push: p %}{% endif %}
+    {% if py == "2026" %}
+      {% assign yposts = yposts | push: p %}
+      {% assign plng = p.lang | default: "id" %}
+      {% if plng == "en" %}{% assign n_en = n_en | plus: 1 %}{% else %}{% assign n_id = n_id | plus: 1 %}{% endif %}
+    {% endif %}
   {% endunless %}
 {% endfor %}
 
@@ -27,29 +32,45 @@ permalink: /ctf/2026/
   <div class="h"><span class="lang-en">Crypto CTF writeups from 2026 will show up here.</span><span class="lang-id">Writeup CTF kripto tahun 2026 bakal muncul di sini.</span></div>
 </div>
 {% else %}
-<div class="chall-list">
-  <div class="chall-head">
-    <span>challenge</span>
-    <span><span class="lang-en">variant</span><span class="lang-id">varian</span></span>
-    <span><span class="lang-en">category</span><span class="lang-id">kategori</span></span>
-    <span class="d"><span class="lang-en">date</span><span class="lang-id">tanggal</span></span>
+{% comment %} tabel per bahasa: kalau bahasa itu kosong tampil empty {% endcomment %}
+{% assign langs = "en,id" | split: "," %}
+{% for L in langs %}
+  {% if L == "en" %}{% assign lcount = n_en %}{% else %}{% assign lcount = n_id %}{% endif %}
+  <div class="plang-{{ L }}">
+  {% if lcount == 0 %}
+    <div class="empty">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M6 9V2h12v7"/><path d="M6 18a2 2 0 0 0-2 2v0a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v0a2 2 0 0 0-2-2"/><path d="M6 14h12"/><path d="M12 22V9"/></svg>
+      <div class="t">{% if L == "en" %}no English writeups for 2026 yet{% else %}belum ada writeup 2026{% endif %}</div>
+    </div>
+  {% else %}
+    <div class="chall-list">
+      <div class="chall-head">
+        <span>challenge</span>
+        <span>{% if L == "en" %}variant{% else %}varian{% endif %}</span>
+        <span>{% if L == "en" %}category{% else %}kategori{% endif %}</span>
+        <span class="d">{% if L == "en" %}date{% else %}tanggal{% endif %}</span>
+      </div>
+      {% for post in yposts %}
+        {% assign plng = post.lang | default: "id" %}
+        {% if plng == L %}
+          {% if post.chall %}
+            {% assign cname = post.chall %}{% assign cvar = post.variant %}
+          {% elsif post.title contains "::" %}
+            {% assign parts = post.title | split: "::" %}
+            {% assign cname = parts[0] | strip %}{% assign cvar = parts[1] | strip %}
+          {% else %}
+            {% assign cname = post.title %}{% assign cvar = "" %}
+          {% endif %}
+          <a class="chall-row" href="{{ post.url | relative_url }}">
+            <span class="c-name">{{ cname }}</span>
+            <span class="c-var">{% if cvar != "" %}{{ cvar }}{% else %}-{% endif %}</span>
+            <span class="c-cat">{% for c in post.categories %}{{ c }}{% unless forloop.last %}, {% endunless %}{% endfor %}</span>
+            <span class="c-date">{{ post.date | date: "%d %b" }}</span>
+          </a>
+        {% endif %}
+      {% endfor %}
+    </div>
+  {% endif %}
   </div>
-  {% for post in yposts %}
-    {% comment %} pisah "nama :: teknik" dari title, atau pakai front matter chall/variant {% endcomment %}
-    {% if post.chall %}
-      {% assign cname = post.chall %}{% assign cvar = post.variant %}
-    {% elsif post.title contains "::" %}
-      {% assign parts = post.title | split: "::" %}
-      {% assign cname = parts[0] | strip %}{% assign cvar = parts[1] | strip %}
-    {% else %}
-      {% assign cname = post.title %}{% assign cvar = "" %}
-    {% endif %}
-    <a class="chall-row" href="{{ post.url | relative_url }}">
-      <span class="c-name">{{ cname }}</span>
-      <span class="c-var">{% if cvar != "" %}{{ cvar }}{% else %}-{% endif %}</span>
-      <span class="c-cat">{% for c in post.categories %}{{ c }}{% unless forloop.last %}, {% endunless %}{% endfor %}</span>
-      <span class="c-date">{{ post.date | date: "%d %b" }}</span>
-    </a>
-  {% endfor %}
-</div>
+{% endfor %}
 {% endif %}
