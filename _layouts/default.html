@@ -2,6 +2,15 @@
 <html lang="{{ site.lang | default: 'en' }}">
 {% include head.html %}
 <body>
+<canvas id="matrix-bg" aria-hidden="true"></canvas>
+<div class="mobile-bar">
+  <button class="hamb" id="hamb" aria-label="menu" aria-expanded="false">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+  </button>
+  <a href="{{ '/' | relative_url }}" class="mb-title">{{ site.title }}</a>
+  <button class="btn" onclick="toggleTheme()">theme</button>
+</div>
+<div class="scrim" id="scrim"></div>
 <div class="shell">
   {% include sidebar.html %}
   <main>
@@ -19,6 +28,70 @@ function toggleTheme(){
   r.setAttribute('data-theme', cur);
   localStorage.setItem('theme', cur);
 }
+(function(){
+  var hamb = document.getElementById('hamb');
+  var scrim = document.getElementById('scrim');
+  var sb = document.querySelector('.sidebar');
+  function open(){ document.body.classList.add('nav-open'); hamb.setAttribute('aria-expanded','true'); }
+  function close(){ document.body.classList.remove('nav-open'); hamb.setAttribute('aria-expanded','false'); }
+  function toggle(){ document.body.classList.contains('nav-open') ? close() : open(); }
+  if(hamb) hamb.addEventListener('click', toggle);
+  if(scrim) scrim.addEventListener('click', close);
+  if(sb) sb.addEventListener('click', function(e){ if(e.target.closest('a')) close(); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') close(); });
+})();
+
+// matrix rain background (subtle, hemat, hormat reduced-motion)
+(function(){
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reduce) return;
+  var cv = document.getElementById('matrix-bg');
+  if(!cv) return;
+  var ctx = cv.getContext('2d', { alpha: true });
+  var chars = '01<>[]{}/\\=+*#$abcdef0123456789ΣΔλφπΩ'.split('');
+  var font = 14, cols = 0, drops = [], W = 0, H = 0, dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+  function themeColor(){
+    return document.documentElement.getAttribute('data-theme') === 'light'
+      ? 'rgba(15,157,82,'   // hijau light
+      : 'rgba(62,232,127,'; // hijau dark
+  }
+  function resize(){
+    W = cv.clientWidth = window.innerWidth;
+    H = cv.clientHeight = window.innerHeight;
+    cv.width = W * dpr; cv.height = H * dpr;
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    cols = Math.floor(W / font);
+    drops = new Array(cols).fill(0).map(function(){ return Math.random() * -50; });
+  }
+  var last = 0;
+  function draw(t){
+    if(t - last > 55){                 // ~18fps, ringan
+      last = t;
+      var fade = document.documentElement.getAttribute('data-theme') === 'light'
+        ? 'rgba(246,250,247,0.12)' : 'rgba(10,19,16,0.14)';
+      ctx.fillStyle = fade;
+      ctx.fillRect(0,0,W,H);
+      ctx.font = font + "px 'JetBrains Mono', monospace";
+      var col = themeColor();
+      for(var i=0;i<drops.length;i++){
+        var ch = chars[(Math.random()*chars.length)|0];
+        var x = i*font, y = drops[i]*font;
+        // kepala lebih terang
+        ctx.fillStyle = col + '0.85)';
+        ctx.fillText(ch, x, y);
+        ctx.fillStyle = col + '0.30)';
+        ctx.fillText(chars[(Math.random()*chars.length)|0], x, y - font);
+        if(y > H && Math.random() > 0.975) drops[i] = Math.random() * -20;
+        drops[i] += 0.5;
+      }
+    }
+    requestAnimationFrame(draw);
+  }
+  resize();
+  window.addEventListener('resize', function(){ clearTimeout(window.__mrz); window.__mrz = setTimeout(resize, 150); });
+  requestAnimationFrame(draw);
+})();
 </script>
 </body>
 </html>

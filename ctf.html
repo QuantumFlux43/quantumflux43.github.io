@@ -11,6 +11,12 @@ permalink: /ctf/
   </p>
 </div>
 
+<div class="sec-title" style="margin-top:var(--sp4)">
+  <h2>pilih tahun</h2>
+  <span class="cmd">$ ls ctf/</span>
+  <span class="rule"></span>
+</div>
+
 <div class="year-grid">
   {% for y in site.ctf_years %}
     {% assign ystr = y | append: "" %}
@@ -24,6 +30,9 @@ permalink: /ctf/
     <a class="year-card" href="{{ '/ctf/' | append: y | append: '/' | relative_url }}">
       <div class="y">{{ y }}</div>
       <div class="n">{{ cnt }} writeup</div>
+      <span class="year-go">buka arsip
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </span>
     </a>
   {% endfor %}
 </div>
