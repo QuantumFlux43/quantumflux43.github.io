@@ -44,10 +44,35 @@ diffie-hellman | elliptic-curves | hash-functions | crypto-web |
 lattices | isogenies | zkp | misc
 ```
 
-Template siap pakai:
+Template siap pakai (sudah bilingual):
 - `template/ctf-writeup.md`
 - `template/cryptohack-writeup.md`
 - `template/knowledge.md`
+
+## 2b. Writeup bilingual (EN/ID)
+
+Situs punya toggle bahasa EN/ID. Isi writeup ikut ganti bahasa kalau prosa
+ditulis dua kali dalam blok bahasa:
+
+```markdown
+<div class="lang-en" markdown="1">
+English prose here. Full markdown works.
+</div>
+<div class="lang-id" markdown="1">
+Teks Indonesia di sini. Markdown penuh jalan.
+</div>
+```
+
+Aturan:
+- `markdown="1"` WAJIB, kalau tidak isi blok tidak dirender sebagai markdown.
+- Heading (`## ...`), code block, dan rumus `$$...$$` cukup ditulis SEKALI di
+  luar blok bahasa. Tidak perlu diterjemahin (universal).
+- Untuk teks pendek inline (dalam kalimat / callout), pakai span:
+  `<span class="lang-en">open</span><span class="lang-id">buka</span>`
+- Bahasa default situs = EN. Kalau lupa nulis blok `lang-en`, teks Indonesia
+  tetap tampil (tidak hilang), cuma tidak ikut ganti saat toggle.
+
+Contoh lengkap: lihat `_posts/2026-08-16-easy-babyrsa-cube-root.md`.
 
 ## 3. Gambar
 

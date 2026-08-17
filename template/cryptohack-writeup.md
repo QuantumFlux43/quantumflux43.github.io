@@ -13,16 +13,25 @@ description: Satu kalimat ringkas challenge + idenya.
     diffie-hellman | elliptic-curves | hash-functions | crypto-web |
     lattices | isogenies | zkp | misc
 
-  GAMBAR:
-    taruh di   assets/img/posts/<slug-file>/
-    embed:     ![alt]({{ "/assets/img/posts/<slug-file>/nama.png" | relative_url }})
+  BILINGUAL: prosa dibungkus blok bahasa (markdown="1" wajib):
+    <div class="lang-en" markdown="1"> ... </div>
+    <div class="lang-id" markdown="1"> ... </div>
+  Heading, code, rumus cukup ditulis sekali di luar blok.
+
+  GAMBAR: assets/img/posts/<slug-file>/ , embed:
+    ![alt]({{ "/assets/img/posts/<slug-file>/nama.png" | relative_url }})
 -->
 
 <div class="callout info"><span class="lbl">challenge</span>
 <b>Platform:</b> CryptoHack :: <b>Kategori:</b> RSA :: <b>Poin:</b> 40
 </div>
 
+<div class="lang-en" markdown="1">
+One paragraph: what the challenge asks, where the flaw is.
+</div>
+<div class="lang-id" markdown="1">
 Satu paragraf: challenge minta apa, celahnya di mana.
+</div>
 
 ## Soal
 
@@ -32,7 +41,12 @@ Satu paragraf: challenge minta apa, celahnya di mana.
 
 ## Ide
 
+<div class="lang-en" markdown="1">
+Why this attack is the one to pick.
+</div>
+<div class="lang-id" markdown="1">
 Kenapa serangan ini yang dipilih.
+</div>
 
 ## Solver
 
@@ -53,4 +67,9 @@ crypto{...}
 
 ## Catatan
 
+<div class="lang-en" markdown="1">
+- Key takeaway from this challenge.
+</div>
+<div class="lang-id" markdown="1">
 - Poin penting yang dipelajari dari challenge ini.
+</div>

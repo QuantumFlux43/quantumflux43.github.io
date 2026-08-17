@@ -35,12 +35,12 @@ ctf_years:
 # Kategori Crypto Knowledge. Tiap kategori punya halaman sendiri /knowledge/<slug>/.
 # Artikel = post dengan front matter: platform: knowledge, kn_cat: <slug>
 knowledge_cats:
-  - { name: "RSA",     slug: "rsa",     desc: "Faktorisasi, exponent kecil, Coppersmith, oracle." }
-  - { name: "AES",     slug: "aes",     desc: "Mode operasi, padding oracle, bit-flip, GCM." }
-  - { name: "ECC",     slug: "ecc",     desc: "Serangan kurva, invalid curve, nonce bias." }
-  - { name: "Hash",    slug: "hash",    desc: "Length extension, kolisi, MAC forgery." }
-  - { name: "PRNG",    slug: "prng",    desc: "Mersenne Twister, LCG, prediksi state." }
-  - { name: "Lattice", slug: "lattice", desc: "LLL, CVP, hidden number problem." }
+  - { name: "RSA",     slug: "rsa",     desc_en: "Factorization, small exponent, Coppersmith, oracle.", desc_id: "Faktorisasi, exponent kecil, Coppersmith, oracle." }
+  - { name: "AES",     slug: "aes",     desc_en: "Modes of operation, padding oracle, bit-flip, GCM.",  desc_id: "Mode operasi, padding oracle, bit-flip, GCM." }
+  - { name: "ECC",     slug: "ecc",     desc_en: "Curve attacks, invalid curve, nonce bias.",           desc_id: "Serangan kurva, invalid curve, nonce bias." }
+  - { name: "Hash",    slug: "hash",    desc_en: "Length extension, collision, MAC forgery.",            desc_id: "Length extension, kolisi, MAC forgery." }
+  - { name: "PRNG",    slug: "prng",    desc_en: "Mersenne Twister, LCG, state prediction.",             desc_id: "Mersenne Twister, LCG, prediksi state." }
+  - { name: "Lattice", slug: "lattice", desc_en: "LLL, CVP, hidden number problem.",                     desc_id: "LLL, CVP, hidden number problem." }
 
 # Progress CryptoHack. Total challenge sesuai kategori resmi cryptohack.org.
 # Update angka "solved" kalau naik. slug dipakai buat filter writeup.

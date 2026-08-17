@@ -23,7 +23,7 @@ permalink: /knowledge/
     <a class="zone {{ zc }}" href="{{ '/knowledge/' | append: cat.slug | append: '/' | relative_url }}">
       <div class="num">{{ cat_posts.size }} <span class="lang-en">notes</span><span class="lang-id">catatan</span></div>
       <h3>{{ cat.name }}</h3>
-      <p>{{ cat.desc }}</p>
+      <p><span class="lang-en">{{ cat.desc_en }}</span><span class="lang-id">{{ cat.desc_id }}</span></p>
       <span class="go"><span class="lang-en">open</span><span class="lang-id">buka</span>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
       </span>

@@ -7,18 +7,27 @@ description: Satu kalimat ringkas soal + teknik yang dipakai.
 ---
 
 <!--
-  GAMBAR:
-  1. taruh file di  assets/img/posts/<slug-writeup>/
-     contoh:         assets/img/posts/nama-soal-nama-ctf-2026/net.png
-  2. embed pakai baris di bawah (ganti path + alt text)
-  3. slug = nama file .md tanpa tanggal & tanpa .md
+  BILINGUAL: prosa ditulis dua kali dalam blok
+    <div class="lang-en" markdown="1"> ... teks Inggris ... </div>
+    <div class="lang-id" markdown="1"> ... teks Indonesia ... </div>
+  markdown="1" WAJIB supaya isi di dalamnya tetap dirender sebagai markdown.
+  Heading (## ...), code block, dan rumus $$...$$ TIDAK perlu diterjemahin,
+  tulis sekali saja di luar blok bahasa.
+
+  GAMBAR: taruh di assets/img/posts/<slug-writeup>/ ; embed:
+    ![alt]({{ "/assets/img/posts/<slug-writeup>/net.png" | relative_url }})
 -->
 
 <div class="callout info"><span class="lbl">info soal</span>
 <b>CTF:</b> Nama CTF 2026 :: <b>Kategori:</b> Crypto :: <b>Poin:</b> 300
 </div>
 
-Satu paragraf: soalnya apa, celahnya apa, satu kalimat.
+<div class="lang-en" markdown="1">
+One paragraph: what the challenge is, where the flaw is.
+</div>
+<div class="lang-id" markdown="1">
+Satu paragraf: soalnya apa, celahnya apa.
+</div>
 
 ## Soal
 
@@ -27,14 +36,15 @@ Satu paragraf: soalnya apa, celahnya apa, satu kalimat.
 # tempel bagian yang relevan saja
 ```
 
-Contoh sisipin gambar (hapus kalau tidak perlu):
-
-![deskripsi gambar]({{ "/assets/img/posts/nama-soal-nama-ctf-2026/soal.png" | relative_url }})
-
 ## Analisis
 
+<div class="lang-en" markdown="1">
+Why I suspected this direction, not just what finally worked. Note the dead ends too.
+</div>
+<div class="lang-id" markdown="1">
 Kenapa curiga ke arah tertentu, bukan cuma apa yang akhirnya berhasil.
 Tulis juga jalan buntu yang sempat dicoba.
+</div>
 
 ## Dasar matematika
 
@@ -42,8 +52,9 @@ $$
 ed - k\varphi(n) = 1
 $$
 
-<div class="callout tip"><span class="lbl">insight kunci</span>
-Jelaskan bound-nya di sini: kapan serangan ini berlaku dan kapan gagal.
+<div class="callout tip"><span class="lbl">insight</span>
+<span class="lang-en">Explain the bound: when this attack applies and when it fails.</span>
+<span class="lang-id">Jelaskan bound-nya: kapan serangan ini berlaku dan kapan gagal.</span>
 </div>
 
 ## Solver
@@ -65,4 +76,9 @@ FLAG{contoh_flag_di_sini}
 
 ## Catatan
 
-- Referensi paper / writeup lain yang membantu
+<div class="lang-en" markdown="1">
+- Reference papers / other writeups that helped.
+</div>
+<div class="lang-id" markdown="1">
+- Referensi paper / writeup lain yang membantu.
+</div>

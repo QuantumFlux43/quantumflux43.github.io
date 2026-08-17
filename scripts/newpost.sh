@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Bikin file writeup/materi baru + folder gambar-nya.
+# Bikin file writeup/materi baru dari template (sudah bilingual EN/ID) + folder gambar.
 #
 # Pemakaian:
 #   ./scripts/newpost.sh ctf        <KATEGORI> "<judul>"
@@ -27,6 +27,15 @@ fi
 KIND="$1"; CAT="$2"; shift 2
 TITLE="$*"
 
+case "$KIND" in
+  ctf)        TPL="template/ctf-writeup.md" ;;
+  cryptohack) TPL="template/cryptohack-writeup.md" ;;
+  knowledge)  TPL="template/knowledge.md" ;;
+  *) echo "jenis tidak dikenal: $KIND (pakai ctf | cryptohack | knowledge)"; exit 1 ;;
+esac
+
+if [ ! -f "$TPL" ]; then echo "template hilang: $TPL"; exit 1; fi
+
 SLUG=$(echo "$TITLE" \
   | tr '[:upper:]' '[:lower:]' \
   | sed -E 's/[^a-z0-9]+/-/g; s/^-+//; s/-+$//')
@@ -40,122 +49,26 @@ if [ -e "$OUT" ]; then echo "sudah ada: $OUT"; exit 1; fi
 mkdir -p _posts "$IMGDIR"
 touch "$IMGDIR/.gitkeep"
 
-img_hint="<!-- gambar: taruh di ${IMGDIR}/ , embed:
-![alt]({{ \"/${IMGDIR}/nama.png\" | relative_url }}) -->"
+# salin template, lalu ganti field front matter
+cp "$TPL" "$OUT"
 
-case "$KIND" in
-  ctf)
-    cat > "$OUT" <<EOF
----
-title: "${TITLE}"
-date: ${STAMP}
-categories: [${CAT}]
-tags: []
-description:
----
+# title
+python3 - "$OUT" "$TITLE" "$STAMP" "$CAT" "$KIND" "$SLUG" <<'PY'
+import sys, re
+out, title, stamp, cat, kind, slug = sys.argv[1:7]
+s = open(out, encoding='utf-8').read()
+s = re.sub(r'^title:.*$',    f'title: "{title}"', s, count=1, flags=re.M)
+s = re.sub(r'^date:.*$',     f'date: {stamp}',    s, count=1, flags=re.M)
+if kind == 'ctf':
+    s = re.sub(r'^categories:.*$', f'categories: [{cat}]', s, count=1, flags=re.M)
+elif kind == 'cryptohack':
+    s = re.sub(r'^ch_cat:.*$', f'ch_cat: {cat}', s, count=1, flags=re.M)
+elif kind == 'knowledge':
+    s = re.sub(r'^kn_cat:.*$', f'kn_cat: {cat}', s, count=1, flags=re.M)
+# arahin path gambar contoh ke slug asli
+s = s.replace('<slug-writeup>', slug).replace('<slug-file>', slug)
+open(out, 'w', encoding='utf-8').write(s)
+PY
 
-${img_hint}
-
-<div class="callout info"><span class="lbl">info soal</span>
-<b>CTF:</b> :: <b>Kategori:</b> Crypto :: <b>Poin:</b>
-</div>
-
-## Soal
-
-\`\`\`python
-\`\`\`
-
-## Analisis
-
-## Dasar matematika
-
-\$\$
-\$\$
-
-## Solver
-
-\`\`\`python
-#!/usr/bin/env python3
-\`\`\`
-
-## Flag
-
-\`\`\`text
-\`\`\`
-
-## Catatan
-EOF
-    ;;
-  cryptohack)
-    cat > "$OUT" <<EOF
----
-title: "${TITLE}"
-date: ${STAMP}
-platform: cryptohack
-ch_cat: ${CAT}
-tags: []
-description:
----
-
-${img_hint}
-
-<div class="callout info"><span class="lbl">challenge</span>
-<b>Platform:</b> CryptoHack :: <b>Kategori:</b> ${CAT} :: <b>Poin:</b>
-</div>
-
-## Soal
-
-\`\`\`python
-\`\`\`
-
-## Ide
-
-## Solver
-
-\`\`\`python
-#!/usr/bin/env python3
-\`\`\`
-
-## Flag
-
-\`\`\`text
-crypto{}
-\`\`\`
-
-## Catatan
-EOF
-    ;;
-  knowledge)
-    cat > "$OUT" <<EOF
----
-title: "${TITLE}"
-date: ${STAMP}
-platform: knowledge
-kn_cat: ${CAT}
-tags: []
-description:
----
-
-${img_hint}
-
-## Konsep
-
-## Kapan berlaku
-
-## Contoh
-
-\`\`\`python
-\`\`\`
-
-## Referensi
-EOF
-    ;;
-  *)
-    echo "jenis tidak dikenal: $KIND (pakai ctf | cryptohack | knowledge)"
-    rm -rf "$IMGDIR"
-    exit 1
-    ;;
-esac
-
-echo "dibuat : $OUT"
+echo "dibuat : $OUT  (sudah bilingual EN/ID, tinggal isi)"
 echo "gambar : $IMGDIR/  (taruh file gambar di sini)"

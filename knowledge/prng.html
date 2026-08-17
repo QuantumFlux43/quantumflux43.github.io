@@ -8,7 +8,7 @@ kn_slug: prng
 <div class="post-head">
   <div class="breadcrumb"><a href="{{ '/knowledge/' | relative_url }}">knowledge</a> / prng</div>
   <h1>PRNG</h1>
-  {% if cat.desc %}<p style="color:var(--fg2);font-size:14px;margin-top:8px">{{ cat.desc }}</p>{% endif %}
+  <p style="color:var(--fg2);font-size:14px;margin-top:8px"><span class="lang-en">{{ cat.desc_en }}</span><span class="lang-id">{{ cat.desc_id }}</span></p>
 </div>
 
 {% assign kn_posts = site.posts | where:"platform","knowledge" | where:"kn_cat",page.kn_slug %}
