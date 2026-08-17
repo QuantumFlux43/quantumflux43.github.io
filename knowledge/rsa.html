@@ -14,15 +14,15 @@ kn_slug: rsa
 {% assign kn_posts = site.posts | where:"platform","knowledge" | where:"kn_cat",page.kn_slug %}
 
 <div class="sec-title">
-  <h2>catatan</h2>
+  <h2><span class="lang-en">notes</span><span class="lang-id">catatan</span></h2>
   <span class="cmd">$ ls ~/knowledge/rsa</span>
   <span class="rule"></span>
 </div>
 {% if kn_posts.size == 0 %}
 <div class="empty">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-  <div class="t">belum ada catatan RSA</div>
-  <div class="h">Tambah post dengan <code>platform: knowledge</code> dan <code>kn_cat: rsa</code> di front matter.</div>
+  <div class="t"><span class="lang-en">no RSA notes yet</span><span class="lang-id">belum ada catatan RSA</span></div>
+  <div class="h"><span class="lang-en">Add a post with <code>platform: knowledge</code> and <code>kn_cat: rsa</code> in the front matter.</span><span class="lang-id">Tambah post dengan <code>platform: knowledge</code> dan <code>kn_cat: rsa</code> di front matter.</span></div>
 </div>
 {% else %}
 <div class="arch-group">

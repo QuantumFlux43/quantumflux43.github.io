@@ -24,6 +24,8 @@ window.MathJax = {
 (function(){
   var t = localStorage.getItem('theme');
   if(t) document.documentElement.setAttribute('data-theme', t);
+  var l = localStorage.getItem('lang') || 'en';
+  document.documentElement.setAttribute('data-lang', l);
 })();
 </script>
 </head>

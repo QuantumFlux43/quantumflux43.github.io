@@ -7,7 +7,8 @@ permalink: /ctf/2026/
   <div class="breadcrumb">ctf / 2026</div>
   <h1>ctf 2026</h1>
   <p style="color:var(--fg2);font-size:14px;margin-top:8px">
-    Daftar soal kripto yang gua solve tahun ini. Klik buat baca writeup lengkap.
+    <span class="lang-en">Crypto challenges I solved this year. Click one to read the full writeup.</span>
+    <span class="lang-id">Daftar soal kripto yang gua solve tahun ini. Klik buat baca writeup lengkap.</span>
   </p>
 </div>
 
@@ -22,13 +23,16 @@ permalink: /ctf/2026/
 {% if yposts.size == 0 %}
 <div class="empty">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M6 9V2h12v7"/><path d="M6 18a2 2 0 0 0-2 2v0a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v0a2 2 0 0 0-2-2"/><path d="M6 14h12"/><path d="M12 22V9"/></svg>
-  <div class="t">belum ada writeup 2026</div>
-  <div class="h">Writeup CTF kripto tahun 2026 bakal muncul di sini.</div>
+  <div class="t"><span class="lang-en">no writeups for 2026</span><span class="lang-id">belum ada writeup 2026</span></div>
+  <div class="h"><span class="lang-en">Crypto CTF writeups from 2026 will show up here.</span><span class="lang-id">Writeup CTF kripto tahun 2026 bakal muncul di sini.</span></div>
 </div>
 {% else %}
 <div class="chall-list">
   <div class="chall-head">
-    <span>challenge</span><span>varian</span><span>kategori</span><span class="d">tanggal</span>
+    <span>challenge</span>
+    <span><span class="lang-en">variant</span><span class="lang-id">varian</span></span>
+    <span><span class="lang-en">category</span><span class="lang-id">kategori</span></span>
+    <span class="d"><span class="lang-en">date</span><span class="lang-id">tanggal</span></span>
   </div>
   {% for post in yposts %}
     {% comment %} pisah "nama :: teknik" dari title, atau pakai front matter chall/variant {% endcomment %}

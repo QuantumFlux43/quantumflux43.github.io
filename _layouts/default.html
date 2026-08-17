@@ -8,14 +8,27 @@
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
   </button>
   <a href="{{ '/' | relative_url }}" class="mb-title">{{ site.title }}</a>
-  <button class="btn" onclick="toggleTheme()">theme</button>
+  <div class="langtog" role="group" aria-label="language">
+    <button data-lang="en" onclick="setLang('en')">EN</button>
+    <button data-lang="id" onclick="setLang('id')">ID</button>
+  </div>
+  <button class="btn" onclick="toggleTheme()" aria-label="toggle theme">
+    <svg class="ic-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" width="15" height="15"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4 12H2M22 12h-2M5 5l1.5 1.5M17.5 17.5 19 19M19 5l-1.5 1.5M6.5 17.5 5 19"/></svg>
+  </button>
 </div>
 <div class="scrim" id="scrim"></div>
 <div class="shell">
   {% include sidebar.html %}
   <main>
     <div class="topbar">
-      <button class="btn" onclick="toggleTheme()" id="theme-btn">theme</button>
+      <div class="langtog" role="group" aria-label="language">
+        <button data-lang="en" onclick="setLang('en')">EN</button>
+        <button data-lang="id" onclick="setLang('id')">ID</button>
+      </div>
+      <button class="btn" onclick="toggleTheme()" id="theme-btn" aria-label="toggle theme">
+        <svg class="ic-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" width="15" height="15"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4 12H2M22 12h-2M5 5l1.5 1.5M17.5 17.5 19 19M19 5l-1.5 1.5M6.5 17.5 5 19"/></svg>
+        <span class="lang-en">theme</span><span class="lang-id">tema</span>
+      </button>
     </div>
     {{ content }}
     {% include footer.html %}
@@ -28,6 +41,18 @@ function toggleTheme(){
   r.setAttribute('data-theme', cur);
   localStorage.setItem('theme', cur);
 }
+function setLang(l){
+  document.documentElement.setAttribute('data-lang', l);
+  localStorage.setItem('lang', l);
+  syncLangBtn(l);
+}
+function syncLangBtn(l){
+  var btns = document.querySelectorAll('.langtog button');
+  for(var i=0;i<btns.length;i++){
+    btns[i].classList.toggle('on', btns[i].getAttribute('data-lang') === l);
+  }
+}
+syncLangBtn(document.documentElement.getAttribute('data-lang') || 'en');
 (function(){
   var hamb = document.getElementById('hamb');
   var scrim = document.getElementById('scrim');
@@ -53,8 +78,8 @@ function toggleTheme(){
 
   function themeColor(){
     return document.documentElement.getAttribute('data-theme') === 'light'
-      ? 'rgba(15,157,82,'   // hijau light
-      : 'rgba(62,232,127,'; // hijau dark
+      ? 'rgba(8,120,60,'    // hijau pekat buat light
+      : 'rgba(80,255,150,'; // hijau terang buat dark
   }
   function resize(){
     W = cv.clientWidth = window.innerWidth;
@@ -66,24 +91,26 @@ function toggleTheme(){
   }
   var last = 0;
   function draw(t){
-    if(t - last > 55){                 // ~18fps, ringan
+    if(t - last > 48){                 // ~20fps, ringan
       last = t;
       var fade = document.documentElement.getAttribute('data-theme') === 'light'
-        ? 'rgba(246,250,247,0.12)' : 'rgba(10,19,16,0.14)';
+        ? 'rgba(246,250,247,0.10)' : 'rgba(10,19,16,0.10)';
       ctx.fillStyle = fade;
       ctx.fillRect(0,0,W,H);
       ctx.font = font + "px 'JetBrains Mono', monospace";
       var col = themeColor();
       for(var i=0;i<drops.length;i++){
-        var ch = chars[(Math.random()*chars.length)|0];
         var x = i*font, y = drops[i]*font;
-        // kepala lebih terang
-        ctx.fillStyle = col + '0.85)';
-        ctx.fillText(ch, x, y);
-        ctx.fillStyle = col + '0.30)';
+        // kepala paling terang
+        ctx.fillStyle = col + '1)';
+        ctx.fillText(chars[(Math.random()*chars.length)|0], x, y);
+        // ekor makin redup
+        ctx.fillStyle = col + '0.55)';
         ctx.fillText(chars[(Math.random()*chars.length)|0], x, y - font);
-        if(y > H && Math.random() > 0.975) drops[i] = Math.random() * -20;
-        drops[i] += 0.5;
+        ctx.fillStyle = col + '0.22)';
+        ctx.fillText(chars[(Math.random()*chars.length)|0], x, y - font*2);
+        if(y > H && Math.random() > 0.965) drops[i] = Math.random() * -20;
+        drops[i] += 0.62;
       }
     }
     requestAnimationFrame(draw);

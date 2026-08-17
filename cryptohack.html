@@ -7,15 +7,15 @@ permalink: /cryptohack/
   <div class="breadcrumb">home / cryptohack</div>
   <h1>cryptohack</h1>
   <p style="color:var(--fg2);font-size:14px;margin-top:8px">
-    Writeup dan catatan challenge dari <a href="https://cryptohack.org/user/{{ site.cryptohack.username }}/">cryptohack.org/{{ site.cryptohack.username }}</a>,
-    dipilah per kategori resmi. Klik kategori buat lihat writeup-nya.
+    <span class="lang-en">Writeups and challenge notes from <a href="https://cryptohack.org/user/{{ site.cryptohack.username }}/">cryptohack.org/{{ site.cryptohack.username }}</a>, split by official category. Click a category to see its writeups.</span>
+    <span class="lang-id">Writeup dan catatan challenge dari <a href="https://cryptohack.org/user/{{ site.cryptohack.username }}/">cryptohack.org/{{ site.cryptohack.username }}</a>, dipilah per kategori resmi. Klik kategori buat lihat writeup-nya.</span>
   </p>
 </div>
 
 {% assign ch_posts = site.posts | where:"platform","cryptohack" %}
 
 <div class="sec-title" style="margin-top:var(--sp5)">
-  <h2>progress per kategori</h2>
+  <h2><span class="lang-en">progress by category</span><span class="lang-id">progress per kategori</span></h2>
   <span class="cmd">// cryptohack.org</span>
   <span class="rule"></span>
 </div>
@@ -36,8 +36,8 @@ permalink: /cryptohack/
 </div>
 
 <div class="sec-title">
-  <h2>kategori</h2>
-  <span class="cmd">$ cd &lt;kategori&gt;</span>
+  <h2><span class="lang-en">categories</span><span class="lang-id">kategori</span></h2>
+  <span class="cmd">$ cd &lt;category&gt;</span>
   <span class="rule"></span>
 </div>
 {% assign zcolors = "zc-green,zc-teal,zc-lime,zc-emerald,zc-cyan,zc-gold" | split: "," %}
@@ -49,7 +49,7 @@ permalink: /cryptohack/
     <a class="zone {{ zc }}" href="{{ '/cryptohack/' | append: cat.slug | append: '/' | relative_url }}">
       <div class="num">{{ cat.solved }}/{{ cat.total }} :: {{ cat_posts.size }} writeup</div>
       <h3>{{ cat.name }}</h3>
-      <span class="go">buka
+      <span class="go"><span class="lang-en">open</span><span class="lang-id">buka</span>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
       </span>
     </a>
