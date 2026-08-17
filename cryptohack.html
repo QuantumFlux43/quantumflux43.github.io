@@ -19,7 +19,7 @@ permalink: /cryptohack/
   <span class="cmd">// cryptohack.org</span>
   <span class="rule"></span>
 </div>
-{% assign pcolors = "pc-cyan,pc-green,pc-purple,pc-gold,pc-pink,pc-red" | split: "," %}
+{% assign pcolors = "pc-green,pc-teal,pc-lime,pc-emerald,pc-cyan,pc-gold" | split: "," %}
 <div class="prog-grid">
   {% for cat in site.cryptohack.categories %}
     {% if cat.total > 0 %}{% assign pct = cat.solved | times: 100 | divided_by: cat.total %}{% else %}{% assign pct = 0 %}{% endif %}
@@ -40,7 +40,7 @@ permalink: /cryptohack/
   <span class="cmd">$ cd &lt;kategori&gt;</span>
   <span class="rule"></span>
 </div>
-{% assign zcolors = "zc-cyan,zc-green,zc-purple,zc-gold,zc-pink,zc-red" | split: "," %}
+{% assign zcolors = "zc-green,zc-teal,zc-lime,zc-emerald,zc-cyan,zc-gold" | split: "," %}
 <div class="zone-grid">
   {% for cat in site.cryptohack.categories %}
     {% assign cat_posts = ch_posts | where:"ch_cat",cat.slug %}

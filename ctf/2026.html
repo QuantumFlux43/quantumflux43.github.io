@@ -4,8 +4,11 @@ title: CTF 2026
 permalink: /ctf/2026/
 ---
 <div class="post-head">
-  <div class="breadcrumb"><a href="{{ '/ctf/' | relative_url }}">ctf</a> / 2026</div>
+  <div class="breadcrumb">ctf / 2026</div>
   <h1>ctf 2026</h1>
+  <p style="color:var(--fg2);font-size:14px;margin-top:8px">
+    Daftar soal kripto yang gua solve tahun ini. Klik buat baca writeup lengkap.
+  </p>
 </div>
 
 {% assign yposts = "" | split:"" %}
@@ -23,19 +26,26 @@ permalink: /ctf/2026/
   <div class="h">Writeup CTF kripto tahun 2026 bakal muncul di sini.</div>
 </div>
 {% else %}
-{% for post in yposts %}
-<div class="post-item">
-  <div class="meta">
-    {{ post.date | date: "%d %b %Y" }}
-    {% if post.categories %} :: {% for c in post.categories %}<span class="cat">{{ c }}</span>{% unless forloop.last %}, {% endunless %}{% endfor %}{% endif %}
+<div class="chall-list">
+  <div class="chall-head">
+    <span>challenge</span><span>varian</span><span>kategori</span><span class="d">tanggal</span>
   </div>
-  <h2><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h2>
-  {% if post.description %}<p>{{ post.description }}</p>{% else %}<p>{{ post.excerpt | strip_html | truncatewords: 26 }}</p>{% endif %}
-  {% if post.tags %}
-  <div class="tags">
-    {% for tag in post.tags %}<span class="tag-chip">{{ tag }}</span>{% endfor %}
-  </div>
-  {% endif %}
+  {% for post in yposts %}
+    {% comment %} pisah "nama :: teknik" dari title, atau pakai front matter chall/variant {% endcomment %}
+    {% if post.chall %}
+      {% assign cname = post.chall %}{% assign cvar = post.variant %}
+    {% elsif post.title contains "::" %}
+      {% assign parts = post.title | split: "::" %}
+      {% assign cname = parts[0] | strip %}{% assign cvar = parts[1] | strip %}
+    {% else %}
+      {% assign cname = post.title %}{% assign cvar = "" %}
+    {% endif %}
+    <a class="chall-row" href="{{ post.url | relative_url }}">
+      <span class="c-name">{{ cname }}</span>
+      <span class="c-var">{% if cvar != "" %}{{ cvar }}{% else %}-{% endif %}</span>
+      <span class="c-cat">{% for c in post.categories %}{{ c }}{% unless forloop.last %}, {% endunless %}{% endfor %}</span>
+      <span class="c-date">{{ post.date | date: "%d %b" }}</span>
+    </a>
+  {% endfor %}
 </div>
-{% endfor %}
 {% endif %}

@@ -3,27 +3,29 @@
    warna aksen ada di :root paling atas
    ============================================================ */
 :root{
-  --bg:#0d1220; --bg2:#141b2e; --bg3:#1e2740; --line:#2c3a5c; --line2:#3d4f78;
-  --fg:#eef3fb; --fg2:#a6b6d0; --fg3:#6f83a3;
-  /* accent utama: cyan-blue */
-  --acc:#38bdf8; --acc-dim:#1f9fe0; --acc-deep:#0e2b45;
-  /* palet section (epic, semantik per zona) */
-  --c-cyan:#38bdf8;   --c-green:#34e39b;  --c-purple:#a78bfa;
-  --c-gold:#fbbf24;   --c-pink:#f472b6;   --c-red:#fb7185;
-  /* alias lama biar komponen existing tetap jalan */
-  --warn:#fbbf24; --dgr:#fb7185; --purp:#a78bfa;
+  --bg:#0a1310; --bg2:#0f1c17; --bg3:#16281f; --line:#213a2e; --line2:#2f5240;
+  --fg:#e7f5ec; --fg2:#9ec2ac; --fg3:#5f8570;
+  /* accent utama: hijau terminal */
+  --acc:#3ee87f; --acc-dim:#23c464; --acc-deep:#0d2e1c;
+  /* palet section (semantik per zona, base hijau) */
+  --c-green:#3ee87f;  --c-cyan:#2dd4bf;   --c-lime:#a3e635;
+  --c-gold:#fbbf24;   --c-teal:#22d3ee;   --c-emerald:#34d399;
+  /* alias biar komponen existing jalan; pink/purple diarahin ke nuansa hijau/teal */
+  --c-purple:#2dd4bf; --c-pink:#a3e635;   --c-red:#f87171;
+  --warn:#fbbf24; --dgr:#f87171; --purp:#2dd4bf;
   --sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
   --mono:"JetBrains Mono","Fira Code",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
   --r:8px;
   --sp1:4px; --sp2:8px; --sp3:16px; --sp4:24px; --sp5:40px; --sp6:64px;
 }
 html[data-theme="light"]{
-  --bg:#f7f9fd; --bg2:#eef2f9; --bg3:#e2e9f4; --line:#d3ddec; --line2:#bccadf;
-  --fg:#0f1826; --fg2:#42536e; --fg3:#64758f;
-  --acc:#0e7ec9; --acc-dim:#0a63a8; --acc-deep:#dceafb;
-  --c-cyan:#0e7ec9; --c-green:#0f9d6b; --c-purple:#6d47c9;
-  --c-gold:#b07d10; --c-pink:#c43d84; --c-red:#c0392b;
-  --warn:#b07d10; --dgr:#c0392b; --purp:#6d47c9;
+  --bg:#f6faf7; --bg2:#eef5f0; --bg3:#e1ede6; --line:#cfe1d6; --line2:#b5cfbf;
+  --fg:#0c1c14; --fg2:#3c5a48; --fg3:#5c7c68;
+  --acc:#0f9d52; --acc-dim:#0a7e42; --acc-deep:#d6f0e0;
+  --c-green:#0f9d52; --c-cyan:#0d8f80; --c-lime:#5a8f10;
+  --c-gold:#b07d10; --c-teal:#0b8aa0; --c-emerald:#0f9d6b;
+  --c-purple:#0d8f80; --c-pink:#5a8f10; --c-red:#c0392b;
+  --warn:#b07d10; --dgr:#c0392b; --purp:#0d8f80;
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
@@ -31,11 +33,11 @@ body{
   margin:0;background:var(--bg);color:var(--fg);
   font-family:var(--mono);font-size:15px;line-height:1.7;
   -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
-  background-image:radial-gradient(rgba(120,150,190,.08) 1px, transparent 1px);
+  background-image:radial-gradient(rgba(90,180,130,.09) 1px, transparent 1px);
   background-size:34px 34px;background-position:-1px -1px;background-attachment:fixed;
 }
 html[data-theme="light"] body{
-  background-image:radial-gradient(rgba(80,110,150,.10) 1px, transparent 1px);
+  background-image:radial-gradient(rgba(60,140,90,.10) 1px, transparent 1px);
 }
 a{color:var(--acc);text-decoration:none}
 a:hover{color:var(--acc);text-decoration:underline;text-underline-offset:3px;
@@ -77,10 +79,10 @@ code,pre,kbd{font-family:var(--mono)}
   transition:background .15s,color .15s,border-color .15s;
 }
 .side-nav a.nc-cyan{--nc:var(--c-cyan)}
-.side-nav a.nc-pink{--nc:var(--c-pink)}
+.side-nav a.nc-pink{--nc:var(--c-lime)}
 .side-nav a.nc-gold{--nc:var(--c-gold)}
-.side-nav a.nc-purple{--nc:var(--c-purple)}
-.side-nav a.nc-green{--nc:var(--c-green)}
+.side-nav a.nc-purple{--nc:var(--c-teal)}
+.side-nav a.nc-green{--nc:var(--c-emerald)}
 .side-nav a:hover{background:var(--bg2);color:var(--fg);text-decoration:none;
   border-left-color:var(--nc)}
 .side-nav a:hover .pfx{color:var(--nc)}
@@ -213,6 +215,8 @@ pre code{background:none;color:var(--fg);padding:0}
 .zone.zc-cyan{--zc:var(--c-cyan)} .zone.zc-green{--zc:var(--c-green)}
 .zone.zc-purple{--zc:var(--c-purple)} .zone.zc-gold{--zc:var(--c-gold)}
 .zone.zc-pink{--zc:var(--c-pink)} .zone.zc-red{--zc:var(--c-red)}
+.zone.zc-lime{--zc:var(--c-lime)} .zone.zc-teal{--zc:var(--c-teal)}
+.zone.zc-emerald{--zc:var(--c-emerald)}
 .zone:hover{border-color:var(--zc);transform:translateY(-2px);
   box-shadow:0 8px 26px rgba(0,0,0,.32);text-decoration:none}
 .zone:hover::before{transform:scaleY(1)}
@@ -232,6 +236,8 @@ pre code{background:none;color:var(--fg);padding:0}
 .prog.pc-cyan{--pc:var(--c-cyan)} .prog.pc-green{--pc:var(--c-green)}
 .prog.pc-purple{--pc:var(--c-purple)} .prog.pc-gold{--pc:var(--c-gold)}
 .prog.pc-pink{--pc:var(--c-pink)} .prog.pc-red{--pc:var(--c-red)}
+.prog.pc-lime{--pc:var(--c-lime)} .prog.pc-teal{--pc:var(--c-teal)}
+.prog.pc-emerald{--pc:var(--c-emerald)}
 .prog .top{display:flex;justify-content:space-between;gap:8px;font-size:12.5px;margin-bottom:6px}
 .prog .top .name{color:var(--fg);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .prog .top .name a:hover{color:var(--pc)}
@@ -310,6 +316,36 @@ pre code{background:none;color:var(--fg);padding:0}
 .year-card .y{font-size:28px;font-weight:600;color:var(--fg);letter-spacing:-.02em;
   font-variant-numeric:tabular-nums}
 .year-card .n{font-size:12px;color:var(--fg3);margin-top:4px}
+
+/* ---------- challenge list (year page) ---------- */
+.chall-list{border:1px solid var(--line);border-radius:10px;overflow:hidden;
+  margin:var(--sp4) 0;background:var(--bg2)}
+.chall-head,.chall-row{display:grid;
+  grid-template-columns:minmax(140px,1.4fr) minmax(120px,1.4fr) 100px 64px;
+  gap:14px;align-items:center;padding:12px 18px}
+.chall-head{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--fg3);
+  font-weight:600;background:var(--bg3);border-bottom:1px solid var(--line)}
+.chall-head .d{text-align:right}
+.chall-row{border-bottom:1px solid var(--line);font-size:13.5px;
+  transition:background .13s;position:relative}
+.chall-row:last-child{border-bottom:0}
+.chall-row::before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;
+  background:var(--acc);transform:scaleY(0);transform-origin:center;transition:transform .15s}
+.chall-row:hover{background:var(--bg3);text-decoration:none}
+.chall-row:hover::before{transform:scaleY(1)}
+.chall-row .c-name{color:var(--fg);font-weight:500}
+.chall-row:hover .c-name{color:var(--acc)}
+.chall-row .c-var{color:var(--c-lime)}
+.chall-row .c-cat{color:var(--fg3);font-size:12px}
+.chall-row .c-date{color:var(--fg3);font-size:12px;text-align:right;
+  font-variant-numeric:tabular-nums;white-space:nowrap}
+@media(max-width:640px){
+  .chall-head{display:none}
+  .chall-row{grid-template-columns:1fr;gap:3px;padding:14px 16px}
+  .chall-row .c-var::before{content:"varian: ";color:var(--fg3)}
+  .chall-row .c-cat::before{content:"kategori: ";color:var(--fg3)}
+  .chall-row .c-date{text-align:left}
+}
 
 /* ---------- footer ---------- */
 footer.site{margin-top:var(--sp6);padding-top:var(--sp4);border-top:1px solid var(--line);

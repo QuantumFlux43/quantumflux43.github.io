@@ -2,6 +2,7 @@
 layout: default
 title: Home
 ---
+{% assign latest_year = site.ctf_years | first %}
 <section class="hero">
   <div class="winbar">
     <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
@@ -31,7 +32,7 @@ title: Home
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
     </span>
   </a>
-  <a class="zone zc-gold" href="{{ '/ctf/' | relative_url }}">
+  <a class="zone zc-gold" href="{{ '/ctf/' | append: latest_year | append: '/' | relative_url }}">
     <div class="num">02 :: per tahun</div>
     <h3>CTF Archives</h3>
     <p>Writeup soal kripto dari CTF, diarsip per tahun. Solver, math, sampai flag.</p>

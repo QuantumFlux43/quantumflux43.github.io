@@ -13,7 +13,7 @@ permalink: /knowledge/
 
 {% assign kn_posts = site.posts | where:"platform","knowledge" %}
 
-{% assign zcolors = "zc-cyan,zc-green,zc-purple,zc-gold,zc-pink,zc-red" | split: "," %}
+{% assign zcolors = "zc-green,zc-teal,zc-lime,zc-emerald,zc-cyan,zc-gold" | split: "," %}
 <div class="zone-grid">
   {% for cat in site.knowledge_cats %}
     {% assign cat_posts = kn_posts | where:"kn_cat",cat.slug %}
