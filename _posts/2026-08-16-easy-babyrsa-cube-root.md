@@ -12,10 +12,8 @@ description: Public exponent e=3 dan pesan kecil bikin ciphertext cuma m pangkat
 <b>CTF:</b> 0xV01D :: <b>Kategori:</b> Crypto :: <b>Soal:</b> 02_easy_babyrsa
 </div>
 
-Pada soal diberikan nilai `n`, `e = 3`, dan `c`. Begitu liat `e = 3` yang gede sebelah
-`n` 1024 bit, curiga pertama: pesannya kecil, jadi enkripsi ga pernah kena
-reduksi modulo. Kalau bener, `c = m^3` di bilangan bulat biasa dan flag tinggal
-diambil dari akar pangkat tiga.
+Pada soal diberikan nilai `n`, `e = 3`, dan `c`. Ketika melihat `c = m^3`, ukuran nilai `c` ukurannya tidak sama dan lebih kecil jika dibandingkan dengan ukuran `n`. Dengan melihat kondisi itu, bisa diasumsikan bahwa ukuran pesan `m` memiliki ukuran yang lebih kecil dari `c` sehingga proses enkripsi nya tidak pernah kena
+reduksi modulo. Oleh karena itu, flag tinggal diambil dari akar pangkat tiga.
 
 ## Soal
 
@@ -25,8 +23,7 @@ e = 3
 c = 1678720587246671095744837808048280852040449638117561797172368829524200937354150...434149
 ```
 
-`n` sekitar 1024 bit. `c` cuma sekitar 190 digit desimal, jauh lebih kecil dari
-`n`. Itu petunjuk kuat kalau `m^3` ga melebihi `n`.
+`n` sekitar 1024 bit. `c` sekitar 190 digit desimal, jauh lebih kecil dari `n`. Itu petunjuk kuat kalau `m^3` tidak melebihi `n`.
 
 ## Analisis
 
