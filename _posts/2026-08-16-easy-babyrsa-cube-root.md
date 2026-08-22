@@ -12,7 +12,7 @@ description: Public exponent e=3 dan pesan kecil bikin ciphertext cuma m pangkat
 <b>CTF:</b> 0xV01D :: <b>Kategori:</b> Crypto :: <b>Soal:</b> 02_easy_babyrsa
 </div>
 
-Soal cuma ngasih `n`, `e = 3`, dan `c`. Begitu liat `e = 3` yang gede sebelah
+Pada soal diberikan nilai `n`, `e = 3`, dan `c`. Begitu liat `e = 3` yang gede sebelah
 `n` 1024 bit, curiga pertama: pesannya kecil, jadi enkripsi ga pernah kena
 reduksi modulo. Kalau bener, `c = m^3` di bilangan bulat biasa dan flag tinggal
 diambil dari akar pangkat tiga.
