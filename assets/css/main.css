@@ -345,8 +345,12 @@ pre code{background:none;color:var(--fg);padding:0}
 
 .tagcloud{display:flex;flex-wrap:wrap;gap:8px;margin:var(--sp4) 0}
 .tagcloud a{font-size:13px;color:var(--fg2);border:1px solid var(--line);border-radius:6px;
-  padding:5px 13px;transition:border-color .15s,color .15s}
+  padding:5px 13px;transition:border-color .15s,color .15s,background .15s;cursor:pointer}
 .tagcloud a:hover{color:var(--acc);border-color:var(--line2)}
+.tagcloud a .cnt{color:var(--fg3);font-size:11px;margin-left:4px}
+.tagcloud a.tag-filter.active{color:var(--acc);border-color:var(--acc);
+  background:color-mix(in srgb,var(--acc) 12%,transparent)}
+.tagcloud a.tag-filter.active .cnt{color:var(--acc-dim)}
 
 /* year cards */
 .year-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:var(--sp3);
