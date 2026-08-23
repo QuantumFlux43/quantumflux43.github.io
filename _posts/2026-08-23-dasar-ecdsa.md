@@ -198,9 +198,43 @@ Terdapat dua pendekatan yang aman untuk menghasilkan nonce.
 
 #### 1. Nonce random
 
-Spesifikasi awal ECDSA memilih `k` secara acak dan uniform dari `{1, ..., n-1}` menggunakan CSPRNG atau *cryptographically secure pseudorandom number generator*.
+Spesifikasi awal ECDSA memilih `k` secara acak dan uniform dari `{1, ..., n-1}` menggunakan CSPRNG atau *cryptographically secure pseudorandom number generator*. Kata kunci di sini adalah **uniform**: setiap nilai dalam rentang `{1, ..., n-1}` harus punya peluang keluar yang sama persis. Bagian ini membahas cara mencapai itu, dan jebakan yang harus dihindari.
 
-Contoh menggunakan rejection sampling:
+**Ukuran `n` pada curve yang umum dipakai**
+
+Besar `n` mengikuti tingkat keamanan curve yang dipakai:
+
+| Curve | Ukuran `n` |
+|---|---|
+| `secp256k1`, `P-256` | 256 bit |
+| `P-384` | 384 bit |
+| `P-521` | 521 bit |
+
+Karena `secp256k1` dan `P-256` yang paling umum dipakai (Bitcoin, Ethereum, TLS), contoh pada bagian ini memakai `n` berukuran 256 bit, sehingga `os.urandom(32)` (32 byte = 256 bit) dipakai sebagai sumber acak.
+
+**Cara yang terlihat wajar, tapi salah**
+
+`os.urandom(32)` menghasilkan angka acak uniform di rentang `0` sampai `2^256 - 1`. Karena nonce `k` harus berada di `{1, ..., n-1}`, cara yang sering terlihat masuk akal adalah memotongnya dengan modulo:
+
+```python
+# Hindari pola ini untuk implementasi kriptografi.
+k = int.from_bytes(os.urandom(32), "big") % (n - 1) + 1
+```
+
+Masalahnya, `n` tidak membagi `2^256` secara rapi. Ini bukan kebetulan: `n` adalah bilangan prima besar (order dari grup titik pada curve), sedangkan `os.urandom(32)` menghasilkan rentang berukuran pangkat dua penuh (`2^256`). Satu-satunya bilangan prima yang juga merupakan pangkat dua adalah `2` itu sendiri, sehingga untuk `n` sebesar ini, `2^256` dibagi `n` hampir pasti menyisakan sisa. Sisa pembagian inilah yang menyebabkan sebagian nilai kecil di rentang `{1, ..., n-1}` punya peluang keluar sedikit lebih besar dibanding nilai lain saat dipotong pakai modulo. Fenomena ini disebut **modulo bias**.
+
+Ilustrasi sederhana: misal sumber acak menghasilkan angka `0` sampai `9` (10 kemungkinan), lalu dipetakan ke rentang `0` sampai `6` (7 pilihan) lewat `% 7`:
+
+```text
+input acak : 0 1 2 3 4 5 6 7 8 9
+hasil % 7  : 0 1 2 3 4 5 6 0 1 2
+```
+
+Nilai `0`, `1`, `2` mendapat "jatah tambahan" dari angka `7`, `8`, `9`, sehingga muncul lebih sering daripada `3`, `4`, `5`, `6`. Hasilnya tidak lagi uniform. Pada aplikasi biasa bias sekecil ini mungkin tidak terasa, tetapi pada nonce ECDSA, bias sekecil apa pun berpotensi dieksploitasi lewat Hidden Number Problem setelah cukup banyak signature terkumpul.
+
+**Solusi: rejection sampling**
+
+Untuk mendapatkan nilai yang benar-benar uniform, gunakan teknik **rejection sampling**: ambil angka acak seperti biasa, lalu jika hasilnya jatuh di luar rentang yang diinginkan, buang (*reject*) dan coba lagi, tanpa memotongnya dengan modulo.
 
 ```python
 import os
@@ -210,20 +244,16 @@ def random_scalar(n):
 
     while True:
         value = int.from_bytes(os.urandom(size), "big")
-        if 1 <= value < n:
+        if 1 <= value < n:      # dalam rentang -> pakai
             return value
+        # di luar rentang -> buang, ulangi loop
 
 k = random_scalar(n)
 ```
 
-Rejection sampling digunakan untuk menghindari modulo bias yang dapat muncul pada pola seperti:
+Karena nilai yang diterima hanya yang jatuh tepat di `{1, ..., n-1}` tanpa dipetakan ulang, tidak ada nilai yang mendapat "jatah tambahan" seperti pada kasus modulo. Distribusi hasilnya menjadi benar-benar uniform. Konsekuensinya, loop bisa perlu mengulang beberapa kali saat hasil di luar rentang, tetapi karena `n` biasanya sangat dekat dengan `2^(size*8)`, peluang reject ini kecil dan overhead-nya dapat diabaikan.
 
-```python
-# Hindari pola ini untuk implementasi kriptografi.
-k = int.from_bytes(os.urandom(32), "big") % (n - 1) + 1
-```
-
-Sumber random harus tidak dapat diprediksi dan tidak menghasilkan pola atau bias yang membocorkan sebagian nilai `k`.
+Selain distribusinya harus uniform, sumber acak itu sendiri juga harus tidak dapat diprediksi. CSPRNG memenuhi kedua syarat ini: hasilnya uniform dan tidak bisa ditebak penyerang, sehingga aman dipakai untuk `k`.
 
 #### 2. Nonce deterministik
 
