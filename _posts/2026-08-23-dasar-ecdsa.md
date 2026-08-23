@@ -374,80 +374,9 @@ Sebelum public key digunakan, implementasi perlu memastikan bahwa:
 
 Validasi ini mencegah public key yang tidak valid masuk ke dalam operasi kriptografi. Pada curve dengan cofactor `1`, seperti `secp256k1`, pemeriksaan subgroup menjadi lebih sederhana, tetapi validasi public key tetap diperlukan.
 
-## Kegagalan nonce dan dampaknya
+## Titik rawan ECDSA
 
-Titik rawan ECDSA umumnya berada pada cara nonce dihasilkan dan dilindungi, bukan pada matematika curve standar yang digunakan.
-
-### Nonce bocor sepenuhnya
-
-Jika `k` diketahui untuk satu signature, private key dapat dihitung:
-
-$$
-D = r^{-1}(sk - z) \bmod n
-$$
-
-Satu nonce yang bocor sudah cukup untuk membocorkan private key.
-
-### Nonce digunakan kembali
-
-Misalkan dua pesan berbeda ditandatangani menggunakan private key dan nonce yang sama:
-
-$$
-s_1 = k^{-1}(z_1 + rD) \bmod n
-$$
-
-$$
-s_2 = k^{-1}(z_2 + rD) \bmod n
-$$
-
-Karena nilai `k` sama, nilai `r` juga sama. Nonce dapat dihitung dengan:
-
-$$
-k = (z_1-z_2)(s_1-s_2)^{-1} \bmod n
-$$
-
-Setelah itu, private key dapat dihitung:
-
-$$
-D = r^{-1}(s_1k-z_1) \bmod n
-$$
-
-Serangan ini hanya membutuhkan aljabar modular dan tidak memerlukan lattice.
-
-### Nonce bias atau bocor sebagian
-
-Jika sebagian bit `k` diketahui, dapat diprediksi, atau memiliki distribusi yang bias, kumpulan signature dapat membentuk **Hidden Number Problem**. Private key kemudian berpotensi dipulihkan menggunakan teknik lattice seperti LLL.
-
-Contoh pola yang berbahaya:
-
-```text
-k = prefix_publik || random_bawah
-```
-
-Jika `prefix_publik` dapat dihitung penyerang, setiap signature membocorkan bit-bit atas nonce. Setelah mengumpulkan cukup banyak signature, penyerang dapat mencoba memulihkan private key.
-
-| Cara `k` dibuat | Aman? | Dampak atau serangan |
-|---|---:|---|
-| CSPRNG uniform dengan rejection sampling | Aman | Tidak ada serangan praktis yang diketahui dari nonce |
-| RFC 6979 yang diimplementasikan dengan benar | Aman | Mengurangi ketergantungan pada RNG runtime |
-| RNG lemah atau sebagian bit dapat diprediksi | Tidak | HNP dan lattice |
-| Sebagian bit diisi nilai publik | Tidak | HNP dan lattice |
-| `k` digunakan untuk dua pesan berbeda | Tidak | Pemulihan private key dengan aljabar modular |
-| `k` bocor penuh pada satu signature | Tidak | Pemulihan private key dengan aljabar modular |
-
-Contoh kelemahan prefix nonce publik dibahas lebih lanjut dalam writeup [Crypto Siren](/posts/2026/08/22/crypto-siren-z0d1ak-ctf-2026/).
-
-## Signature malleability
-
-Pada ECDSA, jika `(r, s)` valid, pasangan berikut secara umum juga valid:
-
-$$
-(r, n-s)
-$$
-
-Keduanya mewakili signature yang ekuivalen secara matematis. Beberapa sistem menggunakan bentuk canonical **low-s**, yaitu memilih nilai `s` yang berada pada bagian bawah rentang, untuk mengurangi signature malleability.
-
-Signature `(r, s)` pada rumus merupakan representasi matematis. Dalam protokol nyata, kedua nilai tersebut dapat dikodekan menggunakan DER, format raw dengan ukuran tetap, atau format khusus protokol.
+Titik rawan ECDSA umumnya berada pada cara nonce dihasilkan dan dilindungi, bukan pada matematika curve standar yang digunakan. Kegagalan nonce (bocor sepenuhnya, digunakan kembali, bias/bocor sebagian), signature malleability, dan celah lain yang sering muncul di CTF dibahas secara terpisah dan lebih lengkap di [Checklist Serangan ECDSA di CTF](/posts/2026/08/23/checklist-serangan-ecdsa-di-ctf/), termasuk urutan prioritas pengecekan dan tanda pemicu tiap serangan.
 
 ## Contoh signing dan verifikasi
 
