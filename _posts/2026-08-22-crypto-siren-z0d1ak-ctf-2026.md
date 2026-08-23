@@ -193,14 +193,14 @@ $$
 m \cdot \ell \gtrsim \log_2 n
 $$
 
-dengan `ell` = bit bocor per sample dan `log2(n)` = ukuran private key. Di
-sini `ell = 10`, `n` = 256-bit, jadi secara teoretis butuh
+dengan `ℓ` = bit bocor per sample dan `log2(n)` = ukuran private key. Di
+sini `ℓ = 10`, `n` = 256-bit, jadi secara teoretis butuh
 `m >= 256/10 ~ 26` sample. Praktiknya diambil lebih banyak sebagai margin,
 karena LLL bukan oracle sempurna dan konstruksi lattice perlu vector target
 menonjol jelas — solver memakai `m = 50` (sekitar dua kali batas teoretis)
 supaya andal. Angka praktis kasar per tingkat leak:
 
-| Bit bocor/sig (`ell`) | Sample praktis | Catatan |
+| Bit bocor/sig (`ℓ`) | Sample praktis | Catatan |
 |---|---|---|
 | ~4 bit | ~80-100+ | mepet, kadang perlu BKZ |
 | ~8 bit | ~40-60 | LLL cukup |
@@ -319,7 +319,7 @@ zdk{A_F3W_8lT5_Per_S1GNATuR3_SlnkS_7h3_KeY}
 
 - Dengan `m = 50` sample (lattice `52 x 52`, karena dimensi `= m + 2`),
   bocoran 10 bit per nonce dari total 256 bit sudah cukup untuk recover
-  private key. Batas teoretisnya sekitar 26 sample (`m·ell >= log2 n`), 50
+  private key. Batas teoretisnya sekitar 26 sample (`m·ℓ >= log2 n`), 50
   dipakai sebagai margin — HNP + LLL efisien walau leak-nya kecil.
 - Mitigasi: nonce ECDSA wajib generate full-random per signature (atau
   deterministik lewat RFC 6979), jangan pernah campur input publik (`msg`,
