@@ -75,6 +75,59 @@ Semua pihak harus menggunakan parameter domain yang sama agar proses signing dan
 
 Private key dan nonce sama-sama berbentuk skalar rahasia, tetapi fungsinya berbeda. Private key digunakan dalam jangka panjang, sedangkan nonce hanya boleh digunakan untuk satu proses signing.
 
+## Notasi dan parameter pada rumus
+
+Berikut arti setiap simbol yang muncul pada rumus signing, verifikasi, dan serangan. Semua operasi skalar dilakukan modulo `n`, kecuali operasi titik yang dilakukan pada curve.
+
+### Parameter publik (domain)
+
+| Simbol | Nama | Definisi |
+|---|---|---|
+| `E` | Curve | Elliptic curve tempat semua titik didefinisikan. |
+| `p` | Prima field | Bilangan prima yang mendefinisikan field koordinat `F_p`. Menentukan besar koordinat `x`, `y` titik. |
+| `G` | Base point / generator | Titik acuan publik pada curve. Semua public key dan titik signature diturunkan dari `G`. |
+| `n` | Order dari `G` | Bilangan prima; jumlah kelipatan `G` sebelum kembali ke titik identitas. Semua skalar bekerja modulo `n`. |
+| `h` | Cofactor | Rasio jumlah total titik curve terhadap `n`. Pada `secp256k1` bernilai `1`. |
+
+### Kunci
+
+| Simbol | Nama | Definisi |
+|---|---|---|
+| `D` | Private key | Skalar rahasia jangka panjang di rentang `{1, ..., n-1}`. Dipakai saat signing. |
+| `Q` | Public key | Titik `Q = D·G` pada curve. Publik, dipakai saat verifikasi. |
+
+### Nilai per-signing
+
+| Simbol | Nama | Definisi |
+|---|---|---|
+| `m` | Pesan | Data yang ditandatangani. |
+| `H` | Fungsi hash | Fungsi hash kriptografis (mis. SHA-256). |
+| `z` | Hash pesan | Integer hasil hash pesan, disesuaikan panjang bit `n`. `z = H(m)` (mod n bila perlu). |
+| `k` | Nonce | Skalar rahasia acak, **baru tiap signing**, di rentang `{1, ..., n-1}`. Menyamarkan `D`. |
+| `R` | Titik nonce | Titik `R = k·G`. Tidak dikirim; hanya koordinat `x`-nya dipakai. |
+| `r` | Komponen r | `r = R.x mod n`. Bagian pertama signature. |
+| `s` | Komponen s | `s = k⁻¹(z + rD) mod n`. Bagian kedua signature. |
+| `(r, s)` | Signature | Pasangan skalar hasil signing, dikirim bersama pesan. |
+
+### Nilai bantu saat verifikasi
+
+| Simbol | Nama | Definisi |
+|---|---|---|
+| `w` | Invers s | `w = s⁻¹ mod n`. |
+| `u₁` | Skalar 1 | `u₁ = z·w mod n`. Pengali untuk `G`. |
+| `u₂` | Skalar 2 | `u₂ = r·w mod n`. Pengali untuk `Q`. |
+| `P` | Titik hasil | `P = u₁·G + u₂·Q`. Jika signature valid, `P = R`, sehingga `P.x mod n = r`. |
+
+### Notasi operasi
+
+| Notasi | Arti |
+|---|---|
+| `a·G` atau `aG` | Scalar multiplication: titik `G` dijumlahkan `a` kali pada curve. |
+| `T.x` | Koordinat `x` dari titik `T`. |
+| `a⁻¹ mod n` | Invers modular: nilai `b` dengan `a·b ≡ 1 (mod n)`. |
+| `x mod n` | Sisa pembagian `x` oleh `n` (hasil di `{0, ..., n-1}`). |
+| `x ← $ S` | `x` dipilih acak uniform dari himpunan `S`. |
+
 ## Key generation
 
 Pilih private key `D` secara acak dari rentang:
