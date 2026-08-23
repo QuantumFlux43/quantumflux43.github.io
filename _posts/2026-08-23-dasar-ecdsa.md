@@ -212,6 +212,24 @@ Besar `n` mengikuti tingkat keamanan curve yang dipakai:
 
 Karena `secp256k1` dan `P-256` yang paling umum dipakai (Bitcoin, Ethereum, TLS), contoh pada bagian ini memakai `n` berukuran 256 bit, sehingga `os.urandom(32)` (32 byte = 256 bit) dipakai sebagai sumber acak.
 
+Sebagai gambaran konkret, nilai `n` pada `secp256k1`:
+
+```text
+n = 0xFFFFFFFF FFFFFFFF FFFFFFFF FFFFFFFE
+    BAAEDCE6 AF48A03B BFD25E8C D0364141
+
+n = 115792089237316195423570985008687907852837564279074904382605163141518161494337
+```
+
+`n` adalah bilangan prima 256-bit, tetapi nilainya **bukan** `2^256` maupun pangkat dua lain. Bandingkan dengan `2^256`:
+
+```text
+2^256 = 115792089237316195423570985008687907853269984665640564039457584007913129639936
+n     = 115792089237316195423570985008687907852837564279074904382605163141518161494337
+```
+
+Keduanya sama-sama 256-bit dan nilainya berdekatan, tetapi berbeda. Selisih kecil inilah yang membuat `2^256 mod (n-1)` tidak nol, sehingga modulo langsung menghasilkan bias seperti dijelaskan berikut.
+
 **Cara yang terlihat wajar, tapi salah**
 
 `os.urandom(32)` menghasilkan angka acak uniform di rentang `0` sampai `2^256 - 1`. Karena nonce `k` harus berada di `{1, ..., n-1}`, cara yang sering terlihat masuk akal adalah memotongnya dengan modulo:
