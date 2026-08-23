@@ -56,6 +56,87 @@ Ide dasar serangan lattice: **bentuk lattice sedemikian rupa** sehingga solusi
 rahasia (private key, nonce error, pesan) menjadi salah satu vektor terpendek —
 lalu jalankan LLL, dan solusi muncul di baris hasil.
 
+## Cara membangun lattice untuk serangan
+
+Sebagian besar serangan lattice mengikuti alur yang sama. Yang berubah antar
+serangan hanya bagaimana persamaan dituangkan ke baris matriks.
+
+### Langkah umum
+
+1. **Tulis relasi rahasia jadi persamaan linear** yang mengandung nilai kecil
+   yang belum diketahui (error, nonce bias, pesan pendek). Bentuknya biasanya
+   `Σ a_i·x_i = target + k·n`, dengan `n` modulus.
+2. **Susun basis** sehingga kombinasi integer baris-barisnya bisa menghasilkan
+   vektor `(nilai_kecil_1, ..., nilai_kecil_t, rahasia)`.
+3. **Buang efek modulo** dengan menaruh kelipatan `n` pada baris tersendiri
+   (kombinasi integer bebas menambah/mengurangi `n`, meniru operasi `mod n`).
+4. **Scaling / weighting**: kalikan kolom/baris dengan faktor agar semua
+   komponen vektor target berskala sama besar. Ini yang membuat vektor target
+   benar-benar menjadi yang terpendek, bukan sekadar salah satu vektor pendek.
+5. **Jalankan LLL**, lalu **pindai tiap baris hasil**: cari baris yang cocok
+   dengan bentuk vektor target, ambil komponen rahasianya, dan verifikasi.
+
+### Pola matriks yang sering dipakai
+
+Untuk sistem `t·x ≡ u (mod n)` dengan `x` rahasia dan error kecil per sample
+(pola Hidden Number Problem), basis berukuran `(m+2) × (m+2)`:
+
+```text
+             kol 0    kol 1   ...  kol m-1   kol m   kol m+1
+baris 0    [ SCALE·n    0     ...    0         0       0    ]
+baris 1    [   0     SCALE·n  ...    0         0       0    ]
+  ...                    (diagonal SCALE·n)
+baris m-1  [   0        0     ...  SCALE·n     0       0    ]
+baris m    [ SCALE·t_0 SCALE·t_1 ... SCALE·t_{m-1}  1      0    ]
+baris m+1  [ SCALE·u_0 SCALE·u_1 ... SCALE·u_{m-1}  0      n    ]
+```
+
+- **Baris diagonal `SCALE·n`**: menyediakan kelipatan `n` untuk menyerap
+  reduksi modulo pada tiap sample.
+- **Baris `m`**: membawa multiplier `t_i` dan sebuah `1` di kolom penanda,
+  sehingga komponen `x` (rahasia) ikut terbawa saat kombinasi.
+- **Baris `m+1`**: membawa konstanta `u_i` dan `n` di kolom terakhir.
+- **`SCALE`**: faktor penyeimbang (pada HNP `SCALE ≈ 2^ℓ`, yaitu `n` dibagi 2
+  pangkat jumlah bit error) supaya error kecil berskala setara dengan `x`.
+
+Kombinasi integer yang "benar" dari baris-baris ini menghasilkan vektor:
+
+```text
+( SCALE·e_0, SCALE·e_1, ..., SCALE·e_{m-1}, x, konstanta )
+```
+
+Karena tiap `e_i` kecil dan sudah diskalakan seimbang, vektor ini pendek dan
+LLL memunculkannya. Nilai `x` dibaca dari kolom penanda.
+
+### Kode kerangka
+
+```python
+from fpylll import IntegerMatrix, LLL
+
+def build_and_solve(samples, n, scale, check):
+    # samples = list of (t, u) dengan  t·x - u = e kecil (mod n)
+    m = len(samples)
+    M = IntegerMatrix(m + 2, m + 2)
+    for i in range(m):
+        M[i, i] = scale * n                 # serap reduksi mod n
+    for i, (t, u) in enumerate(samples):
+        M[m, i]     = scale * t             # baris pembawa x
+        M[m + 1, i] = scale * u             # baris konstanta
+    M[m, m]         = 1                      # kolom penanda x
+    M[m + 1, m + 1] = n
+    LLL.reduction(M)
+    for row in range(m + 2):
+        x = int(M[row, m]) % n              # komponen rahasia
+        for cand in (x, (-x) % n):
+            if cand and check(cand):        # verifikasi solusi
+                return cand
+    raise RuntimeError("gagal; tambah sample atau perbaiki scaling")
+```
+
+Penerapan konkret pola ini (nonce ECDSA) ada di
+[Dasar Hidden Number Problem](/posts/2026/08/23/dasar-hidden-number-problem/)
+dan writeup [Crypto Siren](/posts/2026/08/22/crypto-siren-z0d1ak-ctf-2026/).
+
 ## Kapan berlaku
 
 - **Efektif** kalau dimensi lattice kecil-menengah (puluhan sampai ~seratusan)

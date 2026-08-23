@@ -167,10 +167,22 @@ $$
 s^{-1}z - \text{prefix} \equiv -\,s^{-1}r \cdot D + e \pmod n
 $$
 
-Definisikan `t = r/s mod n` dan `u = (z/s - prefix) mod n` per sample. Maka
-`u - u' = -t \cdot D + e` (mod n) untuk tiap sample, alias tipe HNP standar:
-diketahui `t_i`, `u_i` publik, incar `D` dengan error `e_i` kecil. Dibangun
-matriks lattice (skala `SCALE = n / 2^SUFFIX_BITS`) berukuran `(m+2) x (m+2)`:
+Definisikan `t = r/s mod n` dan `u = (z/s - prefix) mod n` per sample —
+notasi `t`, `u`, `e` sama dengan [Dasar Hidden Number Problem](/posts/2026/08/23/dasar-hidden-number-problem/).
+Maka tiap sample berbentuk `u ≡ t·D - e (mod n)`: `t_i`, `u_i` publik, incar
+`D` dengan error `e_i` kecil (tipe HNP standar).
+
+Pemetaan variabel Siren ke notasi HNP umum:
+
+| HNP umum | Siren | Keterangan |
+|---|---|---|
+| `ℓ` (bit bocor) | `PITCH_BITS = 10` | bit atas nonce yang diketahui |
+| bit error | `SUFFIX_BITS = 246` | `= log2(n) - ℓ`; bit bawah rahasia |
+| `prefix` (bagian known) | `public_pitch(msg) << SUFFIX_BITS` | prefix nonce publik |
+| `e` (error) | 246 bit bawah nonce | `e < 2^SUFFIX_BITS` |
+
+Dibangun matriks lattice (skala `SCALE = n / 2^SUFFIX_BITS ≈ 2^ℓ`, yaitu `n`
+dibagi 2 pangkat jumlah bit error) berukuran `(m+2) x (m+2)`:
 
 ```text
 baris i (0..m-1) : SCALE*n di diagonal kolom i

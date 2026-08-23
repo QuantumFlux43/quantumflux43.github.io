@@ -26,7 +26,14 @@ $$
 | t_i \cdot D - u_i \bmod n | < \frac{n}{2^{\ell}}
 $$
 
-dengan `ℓ` = jumlah bit yang bocor. Tujuannya: temukan `D`.
+dengan `ℓ` = jumlah bit yang **bocor** (diketahui). Tujuannya: temukan `D`.
+
+> Perhatikan dua kuantitas yang berlawanan dan sering tertukar:
+> - `ℓ` = bit yang **bocor/diketahui** per sample.
+> - bit **error** (tidak diketahui) = `log2(n) - ℓ`. Inilah yang membuat
+>   selisih `e_i` kecil: `|e_i| < 2^(log2 n - ℓ) = n / 2^ℓ`.
+>
+> Makin besar `ℓ` (makin banyak bocor), makin kecil `e_i`.
 
 Intuisi: tiap persamaan bilang "`t_i * D` mod n itu dekat dengan nilai publik
 `u_i`, cuma beda selisih kecil (`e_i`)". Selisih kecil ini yang bikin masalah
@@ -40,10 +47,15 @@ tepat) menjadi vektor **sangat pendek** di lattice karena semua `e_i` kecil.
 Vektor lattice "wajar" lain jauh lebih panjang. Jalankan LLL → vektor pendek
 itu muncul → baca `D` dari komponennya.
 
-Konstruksi lattice standar dengan faktor skala `SCALE = n / 2^ℓ` (`ℓ` = bit
-bocor per sample). Nilai ini dipilih supaya error kecil `e_i` (yang besarnya
-`< n/2^ℓ`) berskala setara dengan komponen `D`, sehingga vektor rahasia menjadi
-yang terpendek dan muncul setelah LLL:
+Konstruksi lattice standar memakai faktor skala `SCALE ≈ 2^ℓ` (ekuivalen
+`SCALE = n / 2^(log2 n - ℓ)`, yaitu `n` dibagi 2 pangkat jumlah bit error).
+Nilai ini dipilih supaya error kecil `e_i` (yang besarnya `< n/2^ℓ`) setelah
+dikali `SCALE` menjadi berskala setara dengan komponen `D` (yang seukuran `n`),
+sehingga vektor rahasia menjadi yang terpendek dan muncul setelah LLL:
+
+$$
+\text{SCALE} \cdot |e_i| \;\approx\; 2^{\ell} \cdot \frac{n}{2^{\ell}} \;=\; n \;\sim\; D
+$$
 
 ```text
 baris i (0..m-1) : SCALE*n di diagonal kolom i
@@ -94,7 +106,11 @@ muncul di hasil reduksi. Untuk `n` 256-bit:
 
 Supaya konkret, pakai angka mini yang bisa dicek manual. Misal rahasia
 `D = 1234`, modulus prima `n = 10007` (14-bit), dan tiap sample cuma bocor
-MSB-nya (nilai `u_i` = pembulatan `t_i·D mod n` ke atas beberapa bit).
+MSB-nya (nilai `u_i` = pembulatan `t_i·D mod n` ke bawah beberapa bit).
+
+Variabel `BLEED` di kode = jumlah **bit error** (bit rahasia yang dibuang),
+yaitu `log2(n) - ℓ`. Jadi kalau `BLEED = 4`, error `e < 2^4 = 16` dan bit
+yang bocor `ℓ = log2(10007) - 4 ≈ 9.3`.
 
 **Membuat data sample (peran "server"):**
 
@@ -102,18 +118,18 @@ MSB-nya (nilai `u_i` = pembulatan `t_i·D mod n` ke atas beberapa bit).
 import random
 n = 10007          # modulus prima kecil
 D = 1234           # rahasia yang mau dipulihkan (pura-pura tidak tahu)
-BLEED = 4          # sisakan hanya sebagian bit rendah sebagai "error"
+BLEED = 4          # jumlah bit error (bit rendah yang dibuang) = log2(n) - ℓ
 
 samples = []
 for _ in range(30):
     t = random.randrange(1, n)         # multiplier publik
     full = (t * D) % n                 # nilai penuh (rahasia)
-    e = full % (1 << BLEED)            # error kecil = bit bawah
+    e = full % (1 << BLEED)            # error kecil = BLEED bit bawah
     u = (full - e) % n                 # u = bagian yang "bocor" (MSB)
     samples.append((t, u))             # yang publik cuma (t, u)
 ```
 
-Tiap sample memenuhi `t·D - u = e` dengan `e` kecil (`e < 2^4 = 16`). Kita
+Tiap sample memenuhi `t·D - u = e` dengan `e` kecil (`e < 2^BLEED = 16`). Kita
 punya `t`, `u`; incar `D`.
 
 **Menyelesaikan dengan lattice:**
@@ -123,7 +139,7 @@ from fpylll import IntegerMatrix, LLL
 
 def solve_hnp(samples, n, bleed):
     m = len(samples)
-    scale = n >> bleed                 # ~ n / 2^bleed
+    scale = n >> bleed                 # n / 2^(bit error) ≈ 2^ℓ
     M = IntegerMatrix(m + 2, m + 2)
     for i in range(m):
         M[i, i] = scale * n            # kelipatan n (buang reduksi mod n)
@@ -143,16 +159,17 @@ def solve_hnp(samples, n, bleed):
 print(solve_hnp(samples, n, BLEED))    # -> 1234
 ```
 
-Cek batas teoretis: `m·ℓ = 30·4 = 120 >> log2(10007) ≈ 13.3`, jadi 30 sample
-jauh di atas syarat minimum — LLL menemukan `D = 1234` dengan mudah. Kalau
-`BLEED` diperbesar (bit bocor makin sedikit), butuh lebih banyak sample.
+Cek batas teoretis: bit bocor per sample `ℓ = log2(n) - BLEED ≈ 13.3 - 4 ≈ 9.3`,
+jadi `m·ℓ ≈ 30·9.3 ≈ 279 >> log2(10007) ≈ 13.3` — 30 sample jauh di atas syarat
+minimum, LLL menemukan `D = 1234` dengan mudah. Kalau `BLEED` diperbesar (bit
+error makin banyak = bit bocor `ℓ` makin sedikit), butuh lebih banyak sample.
 
 **Kerangka umum** (versi ECDSA lengkap ada di writeup Crypto Siren) sama persis
 strukturnya, hanya `t`, `u`, dan `check` yang diganti sesuai skema:
 
 ```python
 def solve_hnp_generic(samples, n, bleed, check):
-    # samples = list of (t, u); bleed = bit bocor per sample (ℓ)
+    # samples = list of (t, u); bleed = jumlah bit error = log2(n) - ℓ
     # check(d) -> True kalau d benar
     m = len(samples)
     scale = n // (1 << bleed)

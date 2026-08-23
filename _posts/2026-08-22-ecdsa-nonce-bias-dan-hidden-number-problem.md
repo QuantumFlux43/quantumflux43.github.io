@@ -30,22 +30,31 @@ $$
 k \equiv s^{-1}z + s^{-1}rD \pmod n
 $$
 
-Kalau nonce `k` bisa ditulis sebagai `k = a + e` dengan `a` diketahui
-(published/predictable) dan `e` kecil (`|e| < 2^t` untuk `t` jauh lebih kecil
-dari ukuran `n`), maka tiap signature ngasih persamaan:
+Kalau nonce `k` bisa ditulis sebagai `k = prefix + e` dengan `prefix` diketahui
+(published/predictable) dan `e` kecil (`|e| < 2^ℓ`, dengan `ℓ` = jumlah bit
+bocor, `ℓ` jauh lebih kecil dari ukuran `n`), maka tiap signature ngasih
+persamaan HNP:
 
 $$
-e_i \equiv t_i \cdot D + u_i \pmod n, \qquad t_i = -s_i^{-1} r_i, \quad
-u_i = s_i^{-1} z_i - a_i
+t_i \cdot D - u_i \equiv e_i \pmod n, \qquad
+t_i = r_i \cdot s_i^{-1}, \quad
+u_i = z_i \cdot s_i^{-1} - \text{prefix}_i
 $$
 
-`D` adalah unknown yang sama di semua persamaan, `e_i` kecil dan tidak
-diketahui. Ini persis definisi HNP klasik: recover hidden number `D` dari
-banyak sample linear dengan noise kecil.
+Notasi ini sama dengan yang dipakai di [Dasar Hidden Number Problem](/posts/2026/08/23/dasar-hidden-number-problem/):
+`t_i`, `u_i` publik (dihitung dari signature), `D` unknown yang sama di semua
+persamaan, `e_i` error kecil yang tidak diketahui. Ini persis definisi HNP
+klasik: recover hidden number `D` dari banyak sample linear dengan noise kecil.
+
+> Catatan tanda: bentuk `t·D - u ≡ e` di atas ekuivalen dengan `u ≡ t·D - e`;
+> pemilihan tanda `t_i`/`u_i` boleh berbeda antar implementasi selama konsisten.
+> Konstanta `prefix` di sini sama peran dengan `a` (bagian nonce yang diketahui).
 
 ### Kenapa lattice bisa nemuin `D`
 
-Bangun matriks basis (skala `SCALE = n / 2^t`) berukuran `(m+2) x (m+2)`:
+Bangun matriks basis (skala `SCALE ≈ 2^ℓ`, yaitu `n` dibagi 2 pangkat jumlah
+bit error `= n / 2^(log2 n - ℓ)`; sama seperti di note HNP) berukuran
+`(m+2) x (m+2)`, dengan `m` = jumlah sample:
 
 ```text
 baris i (0..m-1) : SCALE*n di diagonal kolom i, 0 di tempat lain
@@ -53,18 +62,18 @@ baris m          : SCALE*t_0 ... SCALE*t_{m-1}, 1, 0
 baris m+1        : SCALE*u_0 ... SCALE*u_{m-1}, 0, n
 ```
 
-Vector target rahasia `(SCALE*e_0, ..., SCALE*e_{m-1}, D, 1)` (atau bentuk
-serupa) ada di lattice yang direntang baris-baris ini, dan normanya kecil
-relatif ke basis lain karena tiap `e_i` kecil. LLL/BKZ efektif nemuin vector
-pendek di lattice — begitu lattice-nya "dibentuk" biar target itu jadi
-salah satu vector terpendek, reduksi basis akan menyingkapnya di salah satu
-baris hasil.
+Vector target rahasia `(SCALE*e_0, ..., SCALE*e_{m-1}, D, konstanta)` ada di
+lattice yang direntang baris-baris ini, dan normanya kecil relatif ke basis
+lain karena tiap `e_i` kecil. LLL/BKZ efektif nemuin vector pendek di lattice
+— begitu lattice-nya "dibentuk" biar target itu jadi salah satu vector
+terpendek, reduksi basis akan menyingkapnya di salah satu baris hasil.
 
 ## Kapan berlaku
 
-- **Butuh berapa sample?** Rule of thumb: makin sedikit bit bocor per nonce,
-  makin banyak sample dibutuhkan. Bocor 10-bit dari 256-bit nonce biasanya
-  cukup dengan 30-60 sample buat lattice HNP standar.
+- **Butuh berapa sample?** Rule of thumb: makin sedikit bit bocor (`ℓ`) per
+  nonce, makin banyak sample dibutuhkan. Bocor `ℓ = 10` bit dari 256-bit nonce
+  biasanya cukup dengan 30-60 sample buat lattice HNP standar. Batas teoretis
+  dan tabel lengkap ada di [Dasar Hidden Number Problem](/posts/2026/08/23/dasar-hidden-number-problem/).
 - **Sumber bias nonce yang umum di CTF/dunia nyata:**
   - Nonce dibangun dari hash yang sebagian inputnya publik (prefix/suffix
     predictable) — kasus paling sering muncul di CTF.
