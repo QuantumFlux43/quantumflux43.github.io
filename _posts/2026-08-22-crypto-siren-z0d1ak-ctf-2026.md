@@ -70,6 +70,71 @@ def shaped_nonce(msg):
 dihitung sendiri buat pesan apapun yang kita pilih. Artinya **10 bit teratas
 nonce diketahui publik** untuk setiap signature yang kita minta.
 
+### Struktur bit nonce
+
+Nonce `k` berukuran 256 bit, tapi cuma dirakit dari dua bagian: 10 bit atas
+deterministik (dari hash publik) dan 246 bit bawah random rahasia.
+
+```text
+                         NONCE k (256 bit)
+ +---------------------+----------------------------------------------+
+ |   PITCH (10 bit)    |            SUFFIX (246 bit)                   |
+ |   diketahui publik  |            random rahasia                     |
+ +---------------------+----------------------------------------------+
+   ^                     ^
+   public_pitch(msg)     rng_below(SUFFIX_BOUND) - 1
+   = SHA256(SONG_ID:msg) = tak diketahui penyerang
+     >> 246
+
+ bit index: 255 ...... 246 245 ..................................... 0
+            |-- 10 bit --|   |------------- 246 bit -------------|
+               ketahuan            gelap (harus ditebak)
+```
+
+Cara `k` dirakit di kode:
+
+```text
+public_pitch(msg)  = b b b b b b b b b b            (10 bit hash, PUBLIK)
+
+prefix = pitch << 246:
+   b b b b b b b b b b 0 0 0 ... 0 0 0              (digeser ke atas)
+   |---- 10 bit ------| |---- 246 nol ----|
+
+random bawah (RAHASIA):
+   0 0 0 0 0 0 0 0 0 0 r r r ... r r r
+
+k = prefix | random:
+   b b b b b b b b b b r r r ... r r r
+   |-- diketahui ----| |-- tidak diketahui --|
+```
+
+Untuk tiap signature, penyerang menghitung sendiri 10 bit teratasnya:
+
+```text
+SONG_ID  -- dari command "pubkey" (publik)
+msg      -- penyerang yang pilih
+              |
+              v
+   SHA256(SONG_ID + ":" + msg) >> 246  =  pitch  =  10 bit teratas k
+```
+
+Jadi tiap nonce berbentuk `k = a + e`, dengan `a` (prefix) diketahui dan
+`e` (246 bit bawah) kecil relatif ke `n`:
+
+```text
+k = [ prefix 10-bit publik ][ error 246-bit ]
+    |-------- a (known) ----||--- e (< 2^246) ---|
+```
+
+Skala bocornya: cuma 10 dari 256 bit (~3.9%) yang bocor per nonce, tapi itu
+sudah cukup buat HNP.
+
+```text
+n (256 bit): ########################################################  256
+bocor:       ##                                                        10  (3.9%)
+gelap:         ######################################################  246 (96.1%)
+```
+
 ## Analisis
 
 Ini pola klasik *biased nonce ECDSA* -> Hidden Number Problem. Nonce tidak
@@ -115,6 +180,37 @@ baris m+1        : SCALE*u_0 ... SCALE*u_{m-1}, 0, n
 
 LLL reduction bikin salah satu baris hasil punya entry kolom `-2` sama dengan
 `D` (atau `-D mod n`), yang dicek balik dengan `(d*G).x() == pubkey_x`.
+
+Dimensi matriks `= m + 2`: `m` baris untuk `m` sample, plus 2 baris ekstra
+(satu untuk unknown `D`, satu untuk konstanta modulus `n`). Solver di sini
+memakai `m = 50`, jadi lattice-nya berdimensi `52 x 52`.
+
+### Berapa sample yang dibutuhkan?
+
+Batas informasi kasar HNP: total bit bocor harus melebihi ukuran rahasia,
+
+$$
+m \cdot \ell \gtrsim \log_2 n
+$$
+
+dengan `ell` = bit bocor per sample dan `log2(n)` = ukuran private key. Di
+sini `ell = 10`, `n` = 256-bit, jadi secara teoretis butuh
+`m >= 256/10 ~ 26` sample. Praktiknya diambil lebih banyak sebagai margin,
+karena LLL bukan oracle sempurna dan konstruksi lattice perlu vector target
+menonjol jelas — solver memakai `m = 50` (sekitar dua kali batas teoretis)
+supaya andal. Angka praktis kasar per tingkat leak:
+
+| Bit bocor/sig (`ell`) | Sample praktis | Catatan |
+|---|---|---|
+| ~4 bit | ~80-100+ | mepet, kadang perlu BKZ |
+| ~8 bit | ~40-60 | LLL cukup |
+| ~10 bit | ~30-50 | nyaman (kasus ini) |
+| ~128 bit (short nonce) | 2-3 | trivial |
+| 1 bit | ratusan+ | perlu BKZ / metode khusus |
+
+Estimasi ini kasar; keberhasilan aktual bergantung kualitas reduksi (LLL vs
+BKZ), scaling lattice, dan margin di atas batas teoretis. Analisis formalnya
+ada di rujukan bagian Catatan.
 
 ## Solver
 
@@ -221,12 +317,26 @@ zdk{A_F3W_8lT5_Per_S1GNATuR3_SlnkS_7h3_KeY}
 
 ## Catatan
 
-- 50 sample udah cukup buat lattice dimensi 52 nemuin private key dengan
-  bocoran cuma 10 bit per nonce (dari total 256 bit) — HNP + LLL sangat
-  efisien walau leak-nya kecil.
+- Dengan `m = 50` sample (lattice `52 x 52`, karena dimensi `= m + 2`),
+  bocoran 10 bit per nonce dari total 256 bit sudah cukup untuk recover
+  private key. Batas teoretisnya sekitar 26 sample (`m·ell >= log2 n`), 50
+  dipakai sebagai margin — HNP + LLL efisien walau leak-nya kecil.
 - Mitigasi: nonce ECDSA wajib generate full-random per signature (atau
   deterministik lewat RFC 6979), jangan pernah campur input publik (`msg`,
   `song_id`) ke bit manapun dari `k`.
 - Studi lanjut: Minerva attack, Lattice attack on repeated/related nonce,
   RFC 6979 deterministic nonce sebagai mitigasi standar.
+
+## Referensi
+
+- Nguyen & Shparlinski (2003), *The Insecurity of the Elliptic Curve Digital
+  Signature Algorithm with Partially Known Nonces* — bound teoretis bit/sample.
+- Howgrave-Graham & Smart (2001), *Lattice Attacks on Digital Signature
+  Schemes* — analisis praktis jumlah sample untuk DSA/ECDSA nonce leak.
+- Boneh & Venkatesan (1996), *Hardness of Computing the Most Significant Bits
+  of Secret Keys in Diffie-Hellman* — paper asal Hidden Number Problem.
+- Albrecht & Heninger (2021), *On Bounded Distance Decoding with Predicate* —
+  state of the art untuk leak sangat kecil (butuh BKZ + predicate).
+- Materi terkait: [Dasar Hidden Number Problem](/posts/2026/08/23/dasar-hidden-number-problem/),
+  [ECDSA Nonce Bias dan Hidden Number Problem](/posts/2026/08/22/ecdsa-nonce-bias-dan-hidden-number-problem/).
 </content>

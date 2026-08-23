@@ -55,16 +55,37 @@ diatur jadi bentuk HNP: `t_i = r_i/s_i`, `u_i = z_i/s_i - prefix_i`, dan
 `e_i` = bagian nonce yang tidak diketahui (kecil). Detail penerapannya di
 [ECDSA Nonce Bias dan Hidden Number Problem](/posts/2026/08/22/ecdsa-nonce-bias-dan-hidden-number-problem/).
 
+## Berapa sample yang dibutuhkan
+
+Batas informasi kasar: total bit yang bocor harus melebihi ukuran rahasia.
+
+$$
+m \cdot \ell \gtrsim \log_2 n
+$$
+
+`m` = jumlah sample, `ell` = bit bocor per sample, `log2(n)` = ukuran rahasia
+(mis. 256 bit). Ini syarat perlu (*necessary*), bukan jaminan. Praktiknya
+diambil beberapa kali di atas batas ini sebagai margin, karena LLL bukan
+oracle sempurna — vektor target harus benar-benar menonjol pendek supaya
+muncul di hasil reduksi. Untuk `n` 256-bit:
+
+| Bit bocor/sig (`ell`) | Sample praktis | Catatan |
+|---|---|---|
+| ~4 bit | ~80-100+ | mepet, kadang perlu BKZ |
+| ~8 bit | ~40-60 | LLL cukup |
+| ~10 bit | ~30-50 | nyaman |
+| ~128 bit (short nonce) | 2-3 | trivial |
+| 1 bit | ratusan+ | perlu BKZ / metode khusus (Albrecht-Heninger) |
+
 ## Kapan berlaku
 
-- **Trade-off bit vs sample:** makin sedikit bit bocor (`l` kecil), makin banyak
-  sample (`m`) dibutuhkan supaya vektor target tetap menonjol pendek. Bocor
-  ~4-10 bit biasanya butuh puluhan sample.
+- **Trade-off bit vs sample:** makin sedikit bit bocor, makin banyak sample
+  dibutuhkan (lihat tabel di atas).
 - **Butuh `n` prima** dan `t_i` acak/tersebar (kalau `t_i` berkorelasi, lattice
   degeneratif).
 - **Gagal** kalau bocoran terlalu kecil untuk jumlah sample yang tersedia
   (vektor target tidak jadi yang terpendek), atau dimensi terlalu besar untuk
-  LLL (butuh BKZ).
+  LLL (butuh BKZ dengan block size besar).
 
 ## Contoh
 
@@ -97,6 +118,8 @@ def solve_hnp(samples, n, l, check):
 ## Referensi
 
 - Boneh & Venkatesan, "Hardness of Computing the Most Significant Bits of Secret Keys in Diffie-Hellman" (1996) — paper asal HNP.
-- Nguyen & Shparlinski (2003) — penerapan HNP ke (EC)DSA partial nonce.
+- Nguyen & Shparlinski (2003), "The Insecurity of the ECDSA with Partially Known Nonces" — bound teoretis bit/sample untuk (EC)DSA.
+- Howgrave-Graham & Smart (2001), "Lattice Attacks on Digital Signature Schemes" — analisis praktis jumlah sample.
+- Albrecht & Heninger (2021), "On Bounded Distance Decoding with Predicate" — leak sangat kecil (1-bit) dengan BKZ + predicate.
 - Dasar teknis lattice: [Dasar Lattice dan Reduksi LLL](/posts/2026/08/23/dasar-lattice-dan-reduksi-lll/).
 </content>
