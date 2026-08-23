@@ -1,0 +1,93 @@
+---
+title: "Dasar Lattice dan Reduksi LLL"
+date: 2026-08-23 09:10:00 +0700
+lang: id
+ref: dasar-lattice-dan-reduksi-lll
+platform: knowledge
+kn_cat: lattice
+tags: [lattice-attack, fundamental]
+description: Apa itu lattice, basis baik vs buruk, problem SVP/CVP, dan gimana LLL nemuin vector pendek - fondasi hampir semua serangan lattice di crypto.
+---
+
+Lattice adalah struktur matematika yang jadi fondasi banyak serangan crypto
+modern (RSA Coppersmith, ECDSA nonce leak, knapsack, NTRU) sekaligus dasar
+post-quantum cryptography. Materi ini bahas intuisi lattice + LLL supaya paham
+kenapa "reduksi basis" bisa jadi senjata.
+
+## Konsep
+
+### Definisi lattice
+
+Diberikan vektor-vektor basis `b_1, ..., b_m` yang bebas linear di `R^n`,
+lattice adalah himpunan semua kombinasi linear **berkoefisien integer**:
+
+$$
+\mathcal{L} = \left\{ \sum_{i=1}^{m} a_i b_i \;\middle|\; a_i \in \mathbb{Z} \right\}
+$$
+
+Bayangkan grid titik yang terentang tak hingga. Satu lattice yang sama bisa
+direntang oleh **banyak basis berbeda** — ada yang "bagus" (vektornya pendek,
+hampir tegak lurus) dan ada yang "jelek" (panjang, hampir sejajar).
+
+### Basis bagus vs jelek
+
+Kunci semua serangan lattice: lattice yang sama, tapi basis bagus bikin
+problem gampang, basis jelek bikin susah. Public key skema lattice biasanya
+sengaja dikasih dalam basis jelek; trapdoor rahasia = basis bagus.
+
+### Problem inti
+
+- **SVP (Shortest Vector Problem):** cari vektor non-nol terpendek di lattice.
+- **CVP (Closest Vector Problem):** diberi titik target `t` (belum tentu di
+  lattice), cari vektor lattice yang paling dekat ke `t`.
+
+Kedua problem ini keras di dimensi tinggi (basis for post-quantum crypto),
+TAPI di dimensi kecil-menengah (yang sering muncul di CTF), algoritma reduksi
+basis seperti LLL bisa menyelesaikannya cukup baik.
+
+### LLL (Lenstra-Lenstra-Lovasz)
+
+LLL adalah algoritma **polynomial-time** yang mengubah basis jelek jadi basis
+yang "cukup bagus": vektor-vektornya jadi relatif pendek dan hampir ortogonal.
+Vektor pertama hasil LLL adalah **aproksimasi vektor terpendek** (dijamin dalam
+faktor `2^{(m-1)/2}` dari SVP asli — cukup buat banyak serangan praktis).
+
+Ide dasar serangan lattice: **bentuk lattice sedemikian rupa** sehingga solusi
+rahasia (private key, nonce error, pesan) menjadi salah satu vektor terpendek —
+lalu jalankan LLL, dan solusi muncul di baris hasil.
+
+## Kapan berlaku
+
+- **Efektif** kalau dimensi lattice kecil-menengah (puluhan sampai ~seratusan)
+  dan vektor target benar-benar jauh lebih pendek dari vektor lattice lain.
+- **Perlu tuning** lewat scaling/weighting: kolom tertentu dikali faktor besar
+  supaya LLL "memaksa" komponen itu jadi nol/kecil (teknik ini muncul di HNP,
+  Coppersmith, dll).
+- **Gagal** kalau vektor target tidak cukup menonjol pendek dibanding basis, atau
+  dimensi terlalu besar (butuh BKZ dengan block size besar, jauh lebih lambat).
+
+## Contoh
+
+LLL dengan `fpylll` di lattice sederhana:
+
+```python
+from fpylll import IntegerMatrix, LLL
+
+# basis jelek (vektor panjang, hampir sejajar)
+M = IntegerMatrix.from_matrix([
+    [201, 37],
+    [1537, 283],
+])
+print("sebelum:", [ [M[i,j] for j in range(2)] for i in range(2) ])
+
+LLL.reduction(M)   # ubah jadi basis bagus (vektor pendek, ortogonal)
+print("sesudah:", [ [M[i,j] for j in range(2)] for i in range(2) ])
+# baris pertama sekarang ~ vektor terpendek di lattice
+```
+
+## Referensi
+
+- Lenstra, Lenstra, Lovasz, "Factoring polynomials with rational coefficients" (1982) — paper asal LLL.
+- Galbraith, "Mathematics of Public Key Cryptography" — bab lattice yang enak dibaca.
+- Lanjut: [Dasar Hidden Number Problem](/posts/2026/08/23/dasar-hidden-number-problem/), [Dasar NTRU dan Ring Cyclotomic](/posts/2026/08/23/dasar-ntru-dan-ring-cyclotomic/).
+</content>
