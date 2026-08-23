@@ -26,7 +26,7 @@ $$
 | t_i \cdot D - u_i \bmod n | < \frac{n}{2^{\ell}}
 $$
 
-dengan `l` = jumlah bit yang bocor. Tujuannya: temukan `D`.
+dengan `ℓ` = jumlah bit yang bocor. Tujuannya: temukan `D`.
 
 Intuisi: tiap persamaan bilang "`t_i * D` mod n itu dekat dengan nilai publik
 `u_i`, cuma beda selisih kecil (`e_i`)". Selisih kecil ini yang bikin masalah
@@ -40,7 +40,10 @@ tepat) menjadi vektor **sangat pendek** di lattice karena semua `e_i` kecil.
 Vektor lattice "wajar" lain jauh lebih panjang. Jalankan LLL → vektor pendek
 itu muncul → baca `D` dari komponennya.
 
-Konstruksi lattice standar (skala `SCALE = n / 2^l`):
+Konstruksi lattice standar dengan faktor skala `SCALE = n / 2^ℓ` (`ℓ` = bit
+bocor per sample). Nilai ini dipilih supaya error kecil `e_i` (yang besarnya
+`< n/2^ℓ`) berskala setara dengan komponen `D`, sehingga vektor rahasia menjadi
+yang terpendek dan muncul setelah LLL:
 
 ```text
 baris i (0..m-1) : SCALE*n di diagonal kolom i
@@ -148,10 +151,11 @@ jauh di atas syarat minimum — LLL menemukan `D = 1234` dengan mudah. Kalau
 strukturnya, hanya `t`, `u`, dan `check` yang diganti sesuai skema:
 
 ```python
-def solve_hnp_generic(samples, n, l, check):
-    # samples = list of (t, u); check(d) -> True kalau d benar
+def solve_hnp_generic(samples, n, bleed, check):
+    # samples = list of (t, u); bleed = bit bocor per sample (ℓ)
+    # check(d) -> True kalau d benar
     m = len(samples)
-    scale = n // (1 << l)
+    scale = n // (1 << bleed)
     M = IntegerMatrix(m + 2, m + 2)
     for i in range(m):
         M[i, i] = scale * n
