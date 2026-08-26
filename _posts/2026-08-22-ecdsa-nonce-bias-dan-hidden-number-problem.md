@@ -38,7 +38,7 @@ persamaan HNP:
 $$
 t_i \cdot D - u_i \equiv e_i \pmod n, \qquad
 t_i = r_i \cdot s_i^{-1}, \quad
-u_i = z_i \cdot s_i^{-1} - \text{prefix}_i
+u_i = \text{prefix}_i - z_i \cdot s_i^{-1}
 $$
 
 Notasi ini sama dengan yang dipakai di [Dasar Hidden Number Problem](/posts/2026/08/23/dasar-hidden-number-problem/):
@@ -46,9 +46,11 @@ Notasi ini sama dengan yang dipakai di [Dasar Hidden Number Problem](/posts/2026
 persamaan, `e_i` error kecil yang tidak diketahui. Ini persis definisi HNP
 klasik: recover hidden number `D` dari banyak sample linear dengan noise kecil.
 
-> Catatan tanda: bentuk `t·D - u ≡ e` di atas ekuivalen dengan `u ≡ t·D - e`;
-> pemilihan tanda `t_i`/`u_i` boleh berbeda antar implementasi selama konsisten.
-> Konstanta `prefix` di sini sama peran dengan `a` (bagian nonce yang diketahui).
+> Cek tanda `u_i`: dari `k = prefix + e` berarti `e = k - prefix`. Substitusi
+> `k = s⁻¹z + s⁻¹rD` bikin `e = t·D + s⁻¹z - prefix = t·D - (prefix - s⁻¹z)`.
+> Cocok dengan `t·D - u ≡ e` hanya kalau `u = prefix - z·s⁻¹` (bukan
+> `z·s⁻¹ - prefix`). `prefix` di sini sama peran dengan `a` (bagian nonce yang
+> diketahui) di note HNP.
 
 ### Kenapa lattice bisa nemuin `D`
 

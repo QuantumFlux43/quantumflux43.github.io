@@ -66,7 +66,7 @@ baris m+1        : SCALE*u_0 ... SCALE*u_{m-1}, 0, n
 ### Hubungan ke ECDSA
 
 Di ECDSA dengan nonce biased, persamaan `k = s^{-1}z + s^{-1}rD mod n` bisa
-diatur jadi bentuk HNP: `t_i = r_i/s_i`, `u_i = z_i/s_i - prefix_i`, dan
+diatur jadi bentuk HNP: `t_i = r_i/s_i`, `u_i = prefix_i - z_i/s_i`, dan
 `e_i` = bagian nonce yang tidak diketahui (kecil). Detail penerapannya di
 [ECDSA Nonce Bias dan Hidden Number Problem](/posts/2026/08/22/ecdsa-nonce-bias-dan-hidden-number-problem/).
 
