@@ -13,12 +13,29 @@ Pengetahuan kecil yang wajib jadi refleks: **tiap ketemu discrete log,
 faktorkan `p-1` dulu**. Kalau `p-1` smooth (semua faktor prima kecil), DLP yang
 biasanya keras jadi feasible lewat Pohlig-Hellman.
 
+## Peta variabel
+
+| variabel | peran | hubungan |
+|---|---|---|
+| `g` | basis / generator (diketahui) | `g^x ≡ h mod p` |
+| `h` | target (diketahui) | `= g^x mod p` |
+| `p` | modulus prima (diketahui) | orde grup = `p-1` |
+| `x` | eksponen rahasia yang **dicari** | dlog basis `g` dari `h` |
+| `p-1` | orde grup | harus **smooth** supaya feasible |
+| `facs` | faktor prima dari `p-1` | `{p_i: e_i}`; sub-problem per `p_i` |
+| `q, k` | satu faktor prima `q` pangkat `k` | `qk = q^k` (subgrup) |
+
+Alur ketergantungan: `p-1` difaktorkan jadi `facs` → tiap faktor `q^k` jadi satu
+sub-dlog kecil (BSGS) menghasilkan `x mod q^k` → semua digabung CRT jadi `x`.
+Jadi `g,h,p` input, `x` output, dan `facs` (dari `p-1`) yang menentukan apakah
+serangan jalan.
+
 ## Masalah
 
 Discrete Logarithm Problem (DLP): diberi `g`, `h`, `p`, cari `x` sehingga
 
 $$
-g^{x} \equiv h \pmod{p}
+\underbrace{g}_{\text{basis}}^{\;\underbrace{x}_{\text{cari}}} \equiv \underbrace{h}_{\text{target}} \pmod{\underbrace{p}_{\text{prima}}}
 $$
 
 Umumnya keras (dasar keamanan Diffie-Hellman). **Celah:** kalau orde `g`

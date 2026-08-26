@@ -16,6 +16,32 @@ mod `2^k`. Sering bocor `k` bit bawah = cukup untuk recover faktor `k`-bit penuh
 
 ## Ide dasar
 
+### Peta variabel
+
+Sebelum rumus, kenali siapa terhubung ke siapa:
+
+| variabel | peran | hubungan |
+|---|---|---|
+| `n` | modulus publik (diketahui) | `n = a · b` |
+| `a` | faktor yang **dicari** | `a = n / b`; target recovery |
+| `b` | faktor lain (tak diketahui penuh) | `n = a · b`; hanya bit bawahnya bocor |
+| `k` | jumlah bit yang bocor | menentukan modulus kerja `2^k` |
+| `s` | **bocoran** = bit bawah `b` | `s = b mod 2^k`; input yang kita punya |
+| `M` | modulus kerja | `M = 2^k = 1 << k` |
+| `s^{-1}` | inverse `s` mod `M` | ada kalau `s` ganjil |
+
+Alur ketergantungan: `b` bocor sebagian jadi `s` → gabung dengan `n` di dunia
+`mod 2^k` → keluar `a`. Jadi `s` dan `n` adalah **input**, `a` adalah **output**,
+`k`/`M` adalah **parameter dunia mod** tempat semua dihitung.
+
+$$
+\underbrace{n}_{\text{publik}} \;=\; \underbrace{a}_{\text{cari}} \cdot \underbrace{b}_{\text{tak diketahui}}
+\qquad
+\underbrace{s}_{\text{bocor}} = b \bmod \underbrace{2^{k}}_{M}
+$$
+
+### Turunan rumus
+
 Modulus RSA (atau multiprime) `n = a·b`. Misal bocor `s = b mod 2^k` (bit bawah
 `b`). Ambil kedua sisi modulo `2^k`:
 

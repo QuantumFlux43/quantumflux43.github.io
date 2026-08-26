@@ -14,12 +14,25 @@ noise": persamaan `hidden = n*z + rand` sebenarnya cuma **pembagian bersisa**.
 Kalau noise `rand` dibikin kekecilan, hasil bagi bulat `hidden // n` langsung
 membocorkan `z`.
 
+## Peta variabel
+
+| variabel | peran | hubungan |
+|---|---|---|
+| `hidden` | nilai gabungan (diketahui) | `hidden = n·z + rand` |
+| `n` | pembagi (diketahui) | biasanya modulus / faktor |
+| `z` | rahasia yang **dicari** | `z = hasil bagi` `hidden/n` |
+| `rand` | noise / sisa (tak diketahui) | `rand = sisa`; harus kecil |
+
+Alur: `hidden` dan `n` adalah **input**, `z` adalah **output**, `rand` adalah
+noise yang menentukan seberapa akurat `hidden // n` mendekati `z`. Yang penting
+= perbandingan ukuran `rand` vs `n` (lihat bound di bawah).
+
 ## Ide dasar
 
 Pembagian bersisa (yang dari SD):
 
 $$
-\text{hidden} = n \cdot z + \text{rand}, \qquad z = \text{hasil bagi},\ \text{rand} = \text{sisa}
+\underbrace{\text{hidden}}_{\text{diketahui}} = \underbrace{n}_{\text{pembagi}} \cdot \underbrace{z}_{\text{cari}} + \underbrace{\text{rand}}_{\text{sisa/noise}}, \qquad z = \text{hasil bagi}
 $$
 
 Aturan pembagian bersisa: **sisa harus lebih kecil dari pembagi**. Kalau

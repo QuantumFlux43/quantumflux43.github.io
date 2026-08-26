@@ -13,6 +13,20 @@ Pengetahuan kecil yang sering jadi kunci: **pangkat raksasa modulo prima runtuh
 ke pangkat kecil**. Kalau soal memberi `pow(x, E, p)` dengan `E` besar dan `p`
 prima, hampir selalu langkah pertama adalah mereduksi `E` modulo `p-1`.
 
+## Peta variabel
+
+| variabel | peran | hubungan |
+|---|---|---|
+| `x` | basis (rahasia yang **dicari**) | `val = x^E mod p` |
+| `E` | eksponen besar (diketahui) | direduksi jadi `E mod (p-1)` |
+| `p` | modulus prima (diketahui) | orde grup = `p-1` |
+| `val` | hasil `pow(x,E,p)` (diketahui) | `= x^(E mod (p-1)) mod p` |
+| `k` | eksponen kecil setelah collapse | `k = E mod (p-1)` |
+
+Alur: `E` besar → collapse via `mod (p-1)` → jadi `k` kecil → `val = x^k mod p`
+→ ambil akar-`k` → dapat `x`. Jadi `p-1` (orde) adalah "jam" tempat eksponen
+berputar; `E` dan `p` input, `x` output.
+
 ## Fermat's Little Theorem
 
 Kalau `p` prima dan `gcd(a, p) = 1`:
