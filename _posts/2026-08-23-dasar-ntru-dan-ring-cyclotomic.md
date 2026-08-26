@@ -266,17 +266,59 @@ supaya aman.
 - Modulus `q`, dimensi `N`, dan norm bound harus diset sesuai level keamanan;
   salah pilih bikin lattice-nya solvable.
 
-## Contoh
+## Contoh trapdoor konkret
 
-Verifikasi identitas trapdoor `fG - gF = 1` di ring (cek satu file recovery):
+Ini contoh trapdoor NTRU beneran di ring negacyclic `Z[x]/(x^4 + 1)` (`N = 4`),
+dengan `q = 1`. Semua polinomnya pendek (koefisien `{-1, 0, 1}):
+
+$$
+\begin{aligned}
+f &= -1 + x - x^2         &&= [-1,\ 1,\ -1,\ 0] \\
+g &= x^2 - x^3            &&= [\ 0,\ 0,\ 1,\ -1] \\
+F &= -1                   &&= [-1,\ 0,\ 0,\ 0] \\
+G &= x^2                  &&= [\ 0,\ 0,\ 1,\ 0]
+\end{aligned}
+$$
+
+Cek identitas `fG - gF = 1`. Ingat `x^4 = -1` (negacyclic), jadi suku derajat
+`>= 4` membungkus dengan tanda minus:
+
+$$
+\begin{aligned}
+fG &= (-1 + x - x^2)\,x^2 = -x^2 + x^3 - x^4 = 1 - x^2 + x^3 &&= [1,\ 0,\ -1,\ 1] \\
+gF &= (x^2 - x^3)(-1) = -x^2 + x^3                            &&= [0,\ 0,\ -1,\ 1] \\
+fG - gF &= 1 &&= [1,\ 0,\ 0,\ 0]\ \checkmark
+\end{aligned}
+$$
+
+Perhatikan `-x^4` jadi `+1` di `fG` (itu efek negacyclic). Verifikasi pakai
+fungsi `mul` dari bagian atas:
 
 ```python
 def sub(a, b): return [a[i] - b[i] for i in range(len(a))]
 
-# f, g, F, G: list koefisien panjang N dari trapdoor
+f = [-1, 1, -1, 0]     # -1 + x - x^2
+g = [ 0, 0, 1, -1]     #  x^2 - x^3
+F = [-1, 0, 0, 0]      # -1
+G = [ 0, 0, 1, 0]      #  x^2
+
+print("fG      =", mul(f, G))          # [1, 0, -1, 1]
+print("gF      =", mul(g, F))          # [0, 0, -1, 1]
 lhs = sub(mul(f, G), mul(g, F))
+print("fG - gF =", lhs)                # [1, 0, 0, 0]
 assert lhs[0] == 1 and all(c == 0 for c in lhs[1:])   # == 1 di ring
 ```
+
+<div class="callout tip"><span class="lbl">insight</span>
+<code>(f, g)</code> adalah basis pendek (vektor pendek di lattice NTRU),
+<code>(F, G)</code> melengkapinya jadi basis penuh yang memenuhi identitas.
+Trapdoor "bagus" = semua koefisien kecil. Public key <code>h = g·f^{-1} mod q</code>
+menyembunyikan basis pendek ini di balik basis panjang yang keliatan acak.
+Buat parameter nyata (Falcon: <code>N = 512/1024</code>, <code>q = 12289</code>),
+mencari <code>(F, G)</code> dari <code>(f, g)</code> pakai algoritma
+<b>NTRUSolve</b> (extended-GCD di ring + tower of rings), bukan brute force
+seperti pencarian contoh kecil ini.
+</div>
 
 ## Belajar lebih dalam
 
