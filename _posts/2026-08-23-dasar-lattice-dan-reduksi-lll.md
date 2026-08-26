@@ -10,7 +10,7 @@ description: Apa itu lattice, basis baik vs buruk, problem SVP/CVP, dan gimana L
 ---
 
 Lattice adalah struktur matematika yang jadi fondasi banyak serangan crypto
-modern (RSA Coppersmith, ECDSA nonce leak, knapsack, NTRU) sekaligus dasar
+modern (RSA Coppersmith, ECDSA nonce leak, knapsack) sekaligus dasar
 post-quantum cryptography. Materi ini bahas intuisi lattice + LLL supaya paham
 kenapa "reduksi basis" bisa jadi senjata.
 
@@ -26,7 +26,7 @@ $$
 $$
 
 Bayangkan grid titik yang terentang tak hingga. Satu lattice yang sama bisa
-direntang oleh **banyak basis berbeda** — ada yang "bagus" (vektornya pendek,
+direntang oleh **banyak basis berbeda** - ada yang "bagus" (vektornya pendek,
 hampir tegak lurus) dan ada yang "jelek" (panjang, hampir sejajar).
 
 ### Basis bagus vs jelek
@@ -50,10 +50,10 @@ basis seperti LLL bisa menyelesaikannya cukup baik.
 LLL adalah algoritma **polynomial-time** yang mengubah basis jelek jadi basis
 yang "cukup bagus": vektor-vektornya jadi relatif pendek dan hampir ortogonal.
 Vektor pertama hasil LLL adalah **aproksimasi vektor terpendek** (dijamin dalam
-faktor `2^{(m-1)/2}` dari SVP asli — cukup buat banyak serangan praktis).
+faktor `2^{(m-1)/2}` dari SVP asli - cukup buat banyak serangan praktis).
 
 Ide dasar serangan lattice: **bentuk lattice sedemikian rupa** sehingga solusi
-rahasia (private key, nonce error, pesan) menjadi salah satu vektor terpendek —
+rahasia (private key, nonce error, pesan) menjadi salah satu vektor terpendek,
 lalu jalankan LLL, dan solusi muncul di baris hasil.
 
 ## Cara membangun lattice untuk serangan
@@ -168,7 +168,7 @@ print("sesudah:", [ [M[i,j] for j in range(2)] for i in range(2) ])
 
 ## Referensi
 
-- Lenstra, Lenstra, Lovasz, "Factoring polynomials with rational coefficients" (1982) — paper asal LLL.
-- Galbraith, "Mathematics of Public Key Cryptography" — bab lattice yang enak dibaca.
-- Lanjut: [Dasar Hidden Number Problem](/posts/2026/08/23/dasar-hidden-number-problem/), [Dasar NTRU dan Ring Cyclotomic](/posts/2026/08/23/dasar-ntru-dan-ring-cyclotomic/).
+- Lenstra, Lenstra, Lovasz, "Factoring polynomials with rational coefficients" (1982) - paper asal LLL.
+- Galbraith, "Mathematics of Public Key Cryptography" - bab lattice yang enak dibaca.
+- Lanjut: [Dasar Hidden Number Problem](/posts/2026/08/23/dasar-hidden-number-problem/).
 </content>

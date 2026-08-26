@@ -37,8 +37,8 @@ permalink: /knowledge/
   <span class="rule"></span>
 </div>
 <p style="color:var(--fg3);font-size:12.5px;margin:-6px 0 var(--sp3)">
-  <span class="lang-en">Click a tag to filter notes below (e.g. ecdsa, ntru, hnp). Click again to reset.</span>
-  <span class="lang-id">Klik satu tag buat filter catatan di bawah (misal ecdsa, ntru, hnp). Klik lagi buat reset.</span>
+  <span class="lang-en">Click a tag to filter notes below (e.g. ecdsa, lattice, hnp). Click again to reset.</span>
+  <span class="lang-id">Klik satu tag buat filter catatan di bawah (misal ecdsa, lattice, hnp). Klik lagi buat reset.</span>
 </p>
 
 {% assign all_tags = "" | split: "" %}
