@@ -40,6 +40,38 @@ a = (n % M) * inverse(s % M, M) % M     # a exact kalau bit(a) <= k
 assert n % a == 0
 ```
 
+## Kenapa n harus di-mod 2^k dulu
+
+Pertanyaan wajar: kenapa pakai `n % 2^k`, bukan `n` utuh? Karena kita **tidak tahu
+`b` seluruhnya** — cuma `k` bit bawahnya (`s = b mod 2^k`). Kalau dibiarkan utuh,
+`n = a·b` punya `b` yang tidak lengkap → tidak bisa dibagi.
+
+Trik: lipat **semua** ke dunia mod `2^k`, supaya bagian `b` yang tidak diketahui
+(bit atas) **lenyap**, menyisakan hanya `s` yang kita punya. Pakai sifat mod:
+
+$$
+(A \cdot B) \bmod m = \big((A \bmod m)\cdot(B \bmod m)\big) \bmod m
+$$
+
+Terapkan ke `n = a·b` dengan `m = 2^k`:
+
+$$
+n \bmod 2^{k} = \big((a \bmod 2^{k}) \cdot \underbrace{(b \bmod 2^{k})}_{=\,s}\big) \bmod 2^{k}
+$$
+
+Di sinilah kuncinya: `b mod 2^k = s`. **Bit atas `b` yang tidak diketahui otomatis
+hilang** saat di-mod `2^k`; yang tersisa cuma `s`. Konsekuensinya sisi kiri juga
+harus di dunia yang sama — makanya `n` di-`mod 2^k`. Kedua sisi persamaan wajib
+hidup di modulus yang sama supaya `≡` valid:
+
+$$
+\underbrace{n \bmod 2^{k}}_{\text{kiri di-mod}} \;\equiv\; \underbrace{(a \bmod 2^{k}) \cdot s}_{\text{kanan di dunia mod }2^{k}} \pmod{2^{k}}
+$$
+
+Analogi jam: untuk menyamakan "jam" kiri-kanan, dua-duanya harus dibaca sebagai
+jam (mod 12) — tidak bisa satu sisi jam, satu sisi detik. Tanpa `n % 2^k`,
+persamaan tidak seimbang dan `s^{-1}` tidak mengembalikan `a` yang benar.
+
 ## Kenapa jalan: rahasia < modulus
 
 Ini contoh pola umum "**rahasia lebih kecil dari modulus → mod tidak
