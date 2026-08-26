@@ -180,6 +180,80 @@ Inti kelemahan: desainer memilih ukuran noise yang **kekecilan** relatif
 terhadap term rahasia, sehingga bit-length rahasia "menonjol" dan bocor lewat
 operasi bulat yang deterministik.
 
+## Syarat agar nilai bisa direcover
+
+Serangan ini **hanya** jalan kalau kondisi ukuran di bawah terpenuhi. Kalau
+desainer memilih noise cukup besar, tiap langkah gagal. Notasi: `bit(x)` =
+`x.bit_length()`.
+
+### Syarat Alat 1 (Fermat collapse + akar-4)
+
+1. **Modulus prima.** `modd` harus prima supaya Fermat berlaku dan akar-2 mod
+   `modd` bisa dihitung Tonelli-Shanks. Kalau komposit, `p-1` tak terdefinisi
+   dan akar butuh faktorisasi.
+2. **Basis koprima ke modulus.** `gcd(x, modd) = 1` (hampir selalu benar untuk
+   `modd` prima besar).
+3. **Rahasia lebih kecil dari modulus:** `bit(hidden) < bit(modd)`. Kalau
+   `hidden ≥ modd`, operasi mod memotong nilai dan akar-4 tidak lagi mengembalikan
+   `hidden` asli.
+4. **Bit-length rahasia unik di antara kandidat akar.** Range filter
+   (`1200 ≤ r.bit_length() ≤ 1300`) hanya menyisakan satu kandidat kalau
+   `bit(hidden)` cukup jauh dari `bit(modd)`. Kalau `hidden` hampir seukuran
+   `modd`, kandidat asli tidak bisa dibedakan dari akar acak.
+
+### Syarat Alat 2 (integer division leak)
+
+Persamaan `hidden = n·z + rand`. Error hasil bagi:
+
+$$
+\left| \frac{\text{hidden}}{n} - z \right| \approx \frac{\text{rand}}{n} \approx 2^{\,\text{bit(rand)} - \text{bit}(n)}
+$$
+
+- **Kasus ideal:** `bit(rand) ≤ bit(n)` → `rand < n` → `hidden // n = z` **exact**,
+  tanpa brute.
+- **Kasus brute (soal ini):** `bit(rand) - bit(n) ≲ 20` (mis. selisih 11 →
+  error ~2000). Range brute `delta` harus `≥ 2^(bit(rand) - bit(n))`.
+- **Gagal:** kalau `bit(rand) - bit(n) ≳ 40`, error `≳ 2^40` → range brute tidak
+  praktis. Di sini keamanan "benar" seharusnya: buat `rand` seukuran `n·z`
+  (mis. `bit(rand) ≈ bit(hidden)`) supaya `hidden // n` tak berkorelasi ke `z`.
+
+Syarat umum langkah ini:
+
+$$
+\text{bit(rand)} - \text{bit}(n) \;\lesssim\; 20 \quad (\text{brute praktis})
+$$
+
+### Syarat Alat 3 (term dominan)
+
+Untuk `hint = A + B + C` dengan `A` term dominan (`A = z3^8·z2`), pembagian
+`hint // D` (dengan `D = z3^8`) mengembalikan `z2` **exact** hanya kalau term
+sisa lenyap di pembagian bulat:
+
+$$
+\text{bit}(B + C) \;<\; \text{bit}(D) \quad\Longleftrightarrow\quad \frac{B + C}{D} < 1
+$$
+
+Praktisnya butuh margin: **selisih bit `≥ ~30`** antara term dominan `A` dan
+gabungan term sisa. Kalau `bit(B+C) ≥ bit(D)`, sisa bocor ke hasil bagi dan
+`z2` meleset (tak selalu bisa dibrute karena meleset bisa besar).
+
+### Syarat langkah decrypt
+
+- Faktorisasi `n = z1·z2` berhasil (`z2` exact dari langkah sebelumnya).
+- `gcd(e, phi) = 1` supaya `d = e^{-1} mod phi` ada (default `e = 65537` aman).
+
+### Ringkasan bound
+
+| Langkah | Syarat wajib |
+|---|---|
+| Fermat + akar-4 | `modd` prima; `bit(hidden) < bit(modd)` dengan gap cukup |
+| Integer division | `bit(rand) - bit(n) ≲ 20` (atau `< 0` untuk exact) |
+| Term dominan | `bit(term_dominan) - bit(term_sisa) ≥ ~30` |
+| Decrypt | `gcd(e, phi) = 1` |
+
+Kalau **satu** syarat ukuran gagal, langkah bersangkutan tidak bisa direcover —
+itulah cara desainer menutup celah (perbesar noise sampai seukuran term rahasia).
+
 ## Referensi
 
 - Fermat's Little Theorem — dasar reduksi eksponen modular.

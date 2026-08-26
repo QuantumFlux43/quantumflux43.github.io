@@ -162,6 +162,81 @@ Diberi `N` (prima, `N-1` smooth), `e`, `u = able(s)`, `n = p*q*r`, `c`.
    `p < 2^k`.
 5. **`m < p`?** → decrypt satu prima cukup, tak perlu faktor lengkap.
 
+## Syarat agar nilai bisa direcover
+
+Tiap langkah punya prasyarat ukuran/struktur. Kalau salah satu gagal, rantai
+putus. Notasi: `bit(x) = x.bit_length()`.
+
+### Syarat Alat 1 (hint → polinomial)
+
+1. **`N` prima.** Diperlukan supaya `inverse(e, N)` ada dan faktorisasi
+   polinomial mod `N` (`sympy.Poly(..., modulus=N)`) valid.
+2. **`gcd(e, N) = 1`** supaya `a = e^{-1} mod N` terdefinisi.
+3. **Cubic punya akar linear mod N.** `X^3 - uX^2 + X + 1` harus punya minimal
+   satu faktor derajat-1 (yaitu `X = e^s`). Untuk `s` valid, akar ini pasti ada;
+   kalau tidak muncul, berarti `N` bukan prima atau hint bukan bentuk yang
+   diasumsikan.
+
+### Syarat Alat 2 (Pohlig-Hellman) — paling kritis
+
+Discrete log `X = e^s mod N` feasible **hanya kalau `N-1` smooth**. Biaya PH
+didominasi faktor prima terbesar `p_max` dari `N-1`:
+
+$$
+\text{biaya} \;\approx\; \sum_{p_i \mid (N-1)} \sqrt{p_i} \;\lesssim\; \#\text{faktor} \cdot \sqrt{p_{\max}}
+$$
+
+- **Berhasil (soal ini):** semua faktor `N-1` `≤ ~2^20` → `√p_max ≈ 2^10 ≈ 1000`
+  langkah per faktor → total < 0.3 detik.
+- **Batas praktis:** `p_max ≲ 2^40` masih feasible (`√p_max ≈ 2^20` = ~jutaan
+  langkah BSGS, butuh memori tabel besar tapi masih jalan).
+- **Gagal:** kalau `N-1` punya **satu** faktor prima besar (mis. `≥ 2^80`), PH
+  buntu di faktor itu — persis kenapa RSA aman: modulus dipilih dengan `p-1`
+  punya faktor besar. Ini syarat mati/hidup serangan.
+4. **`e` menghasilkan orde yang memuat `s`.** `s` harus `< ord_N(e)`; kalau `e`
+   berorde kecil, hasil dlog ambigu modulo orde. Untuk `e = 65537` dan `N` prima
+   besar, orde biasanya besar → aman.
+
+### Syarat Alat 3 (partial factor recovery mod 2^k)
+
+Dari `n ≡ p·s (mod 2^k)`, kita solve `p = (n mod 2^k)·s^{-1} mod 2^k`.
+
+1. **`s` invertible mod `2^k`** → `s` harus **ganjil** (`gcd(s, 2^k) = 1`).
+   Kalau `q·r` genap (mustahil untuk prima ganjil `q, r`), gagal. Untuk RSA
+   prima > 2 selalu ganjil → aman.
+2. **Faktor yang direcover lebih kecil dari modulus bocoran:** `bit(p) ≤ k`.
+   Di sini `p` 512-bit dan `k = 512` → `p < 2^k` → recover **exact**. Kalau
+   `bit(p) > k`, hanya `k` bit bawah `p` yang didapat (parsial), butuh langkah
+   lanjutan (mis. Coppersmith untuk sisa bit).
+3. **`s` benar-benar `k` bit bawah dari `qr`.** Yaitu bocoran memang
+   `(q·r) mod 2^k` dengan `k = bit(p)`. Kalau mask-nya beda (`mod 2^j`, `j ≠ k`),
+   sesuaikan modulus `M = 1 << j`.
+
+$$
+\boxed{\;\text{bit}(p) \le k \;\text{ dan }\; s \text{ ganjil} \;\Longrightarrow\; p \text{ recover exact}\;}
+$$
+
+### Syarat Alat 4 (decrypt mod p saja)
+
+- **`m < p`.** Plaintext harus lebih kecil dari `p` supaya `m mod p = m`.
+  Cek: `bit(flag_bytes·8) < bit(p)`. Flag ~488-bit `<` `p` 512-bit → aman.
+  Kalau `m ≥ p`, hasil `pow(c%p, d_p, p)` hanya `m mod p` (rusak) — harus
+  faktorkan `qr` juga dan pakai CRT penuh.
+- **`gcd(e, p-1) = 1`** supaya `d_p = e^{-1} mod (p-1)` ada.
+
+### Ringkasan bound
+
+| Langkah | Syarat wajib |
+|---|---|
+| hint → cubic | `N` prima; `gcd(e,N)=1`; ada akar linear |
+| Pohlig-Hellman | **`N-1` smooth** (`p_max ≲ 2^40`); orde `e` besar |
+| partial recovery | `s` ganjil; `bit(p) ≤ k` |
+| decrypt mod p | `m < p`; `gcd(e, p-1) = 1` |
+
+Syarat paling menentukan = **`N-1` smooth**. Kalau desainer memilih `N` dengan
+`N-1` punya faktor prima besar, discrete log kembali keras dan seluruh rantai
+gagal sejak Alat 2.
+
 ## Referensi
 
 - Pohlig & Hellman (1978), "An Improved Algorithm for Computing Logarithms over GF(p)".
